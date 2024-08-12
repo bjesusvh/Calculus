@@ -168,7 +168,7 @@ end
 
 # ╔═╡ 012217b3-524f-4094-8e6d-099fa7443006
 begin
-	url1 = "https://mega.nz/file/tF5Q3S7I#3p0UOgA9Yhx_wdBRw3ORxn-fArmBfvcLENZ96jTl93Y/limite.png"
+	url1 = "https://github.com/bjesusvh/Calculus/blob/main/Pluto/limite.png"
 	nombre1 = download(url1)
 	limite = load(nombre1)
 end
