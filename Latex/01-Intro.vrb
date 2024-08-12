@@ -1,0 +1,9 @@
+\frametitle{En R}
+
+\begin{verbatim}
+\end{verbatim}
+  > CO2<-function(t){0.0134594696825104*t?2+
+        0.520632601928747*t+310.423363171355}
+        > a<-0
+        > b<-67
+        > (CO2(b)-CO2(a))/(b-a)

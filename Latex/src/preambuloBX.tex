@@ -1,0 +1,96 @@
+% !TEX encoding = IsoLatin9
+
+\documentclass[aspectratio=54, 9pt]{beamer}
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define los colores del Banco de México
+\definecolor{bmxblue}{RGB}{0,56,168}     % Azul del Banco de México
+\definecolor{bmxgray}{RGB}{131,139,141}  % Gris del Banco de México
+\definecolor{bmxgreen}{RGB}{0,153,68}    % Verde del Banco de México
+\definecolor{bmxorange}{RGB}{255,102,0}  % Naranja del Banco de México
+
+% Aplica los colores al tema Metropolis
+\setbeamercolor{alerted text}{fg=bmxorange}
+\setbeamercolor{frametitle}{bg=bmxblue, fg=white}
+\setbeamercolor{title separator}{fg=bmxblue}
+\setbeamercolor{progress bar}{fg=bmxgreen, bg=bmxgray}
+\setbeamercolor{block title}{bg=bmxblue, fg=white}
+\setbeamercolor{block body}{bg=bmxgray!20, fg=black}
+\setbeamercolor{background canvas}{bg=white}
+
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}           %% simbolo de la norma
+\usepackage{mwe}     % For dummy images
+\usepackage{lmodern} % To suppress some warnings
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+% Algunos paquetes.
+\usepackage[spanish, mexico]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{subfig}                                            
+\usepackage{tikz}
+\usepackage{ragged2e}
+\setbeamertemplate{bibliography item}[text] % añadir referencias sin citarlas
+\usepackage{appendixnumberbeamer}
+\justifying
+%\setbeamercolor{math text}{fg=blue}
+\usepackage{pgf,tikz}
+\usepackage{multirow}                      %%Para unir filas en tablas
+\usetikzlibrary{arrows}
+\newtheorem{defi}{Definición}
+\newtheorem{teo}{Teorema}
+\newtheorem{prop}{Proposición}
+\RequirePackage{xcolor}
+%\usecolortheme[RGB={99,99,99}]{structure} 
+\definecolor{OwlRed}{RGB}{222,45,38}
+\definecolor{OwlGreen}{RGB}{90, 168, 0}
+\definecolor{OwlBlue}{RGB}{49,130,189}
+\definecolor{OwlYellow}{RGB}{ 242, 147,  24}
+\newcommand{\azul}[1]{\textcolor{OwlBlue}{#1}}
+\newcommand{\amarillo}[1]{\textcolor{OwlYellow}{#1}}
+\newcommand{\rojo}[1]{\textcolor{OwlRed}{#1}}
+\newcommand{\verde}[1]{\textcolor{OwlGreen}{#1}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+
+\usepackage{multicol}
+\usepackage{multirow}
+%\usepackage[table,xcdraw]{xcolor}
+
+
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+

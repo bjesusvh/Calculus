@@ -1,0 +1,105 @@
+% !TEX encoding = IsoLatin9
+\documentclass[aspectratio=54, 9pt]{beamer}
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define los colores del MIDE
+\definecolor{rojito}{RGB}{178, 18, 18}    % Rojo UAEH
+\definecolor{uaehred}{RGB}{49,163,84}    % Rojo UAEH
+\definecolor{uaehgray}{RGB}{128, 128, 128} % Gris UAEH
+
+% Aplica los colores al tema Metropolis
+\setbeamercolor{alerted text}{fg=uaehred}
+\setbeamercolor{frametitle}{bg=uaehred, fg=white}
+\setbeamercolor{title separator}{fg=uaehred}
+\setbeamercolor{progress bar}{fg=uaehred, bg=uaehgray}
+\setbeamercolor{block title}{bg=uaehred, fg=white}
+\setbeamercolor{block body}{bg=uaehgray!20, fg=black}
+\setbeamercolor{background canvas}{bg=white}
+
+\usepackage{calrsfs} % Paquete necesario para \mathcal
+
+
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}           %% simbolo de la norma
+\usepackage{mwe}     % For dummy images
+\usepackage{lmodern} % To suppress some warnings
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+% Algunos paquetes.
+\usepackage[spanish, mexico]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{subfig}                                            
+\usepackage{tikz}
+\usepackage{ragged2e}
+\setbeamertemplate{bibliography item}[text] % añadir referencias sin citarlas
+\usepackage{appendixnumberbeamer}
+\justifying
+\setbeamercolor{math text}{fg=rojito}
+\usepackage{pgf,tikz}
+\usepackage{multirow}                      %%Para unir filas en tablas
+\usetikzlibrary{arrows}
+\newtheorem{defi}{Definición}
+\newtheorem{teo}{Teorema}
+\newtheorem{prop}{Proposición}
+\RequirePackage{xcolor}
+%\usecolortheme[RGB={99,99,99}]{structure} 
+\definecolor{OwlRed}{RGB}{222,45,38}
+\definecolor{OwlGreen}{RGB}{90, 168, 0}
+\definecolor{OwlBlue}{RGB}{49,130,189}
+\definecolor{OwlYellow}{RGB}{ 242, 147,  24}
+\newcommand{\azul}[1]{\textcolor{OwlBlue}{#1}}
+\newcommand{\amarillo}[1]{\textcolor{OwlYellow}{#1}}
+\newcommand{\rojo}[1]{\textcolor{OwlRed}{#1}}
+\newcommand{\verde}[1]{\textcolor{OwlGreen}{#1}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+
+\usepackage{multicol}
+\usepackage{multirow}
+%\usepackage[table,xcdraw]{xcolor}
+
+
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+% redefiniciones de comandos
+% Definiciones de comandos personalizados
+\newcommand{\be}{\begin{equation*}}
+\newcommand{\ee}{\end{equation*}}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+

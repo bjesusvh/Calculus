@@ -1,0 +1,181 @@
+% !TEX encoding = IsoLatin9
+
+\input{src/preambuloMIDE.tex}
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+\begin{document}
+
+\title[Tema]{Razón de cambio}
+\subtitle{Preliminares}
+\author{Dr. Bartolo de Jesús Villar-Hernández} 
+\date{\today} 
+\institute{``Far better an approximate answer to the right question, which is 
+often vague, than the exact answer to the wrong question, which can
+always be made precise''  (John Tukey, Ann. Math. Stat. [33] 1962)}
+\titlegraphic{\hfill\includegraphics[height=3.0cm]{logo/mide.png}}
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+%\begin{frame}{Contenido}
+%\transwipe
+%\tableofcontents
+%\end{frame}
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+
+%-------
+\begin{frame}{Introducción}
+
+La concentración promedio anual de $CO_2$ atmosférico en Mauna Loa\footnote{\url{https://es.wikipedia.org/wiki/Mauna_Loa}}, en partes por millón (ppm), $t$ años después de 1950, está dada por la siguiente función:
+
+\be
+\text{CO}_{2(t)} = 0.0134594696825t^2 + 0.520632601929t + 310.423363171
+\ee
+
+Para comprender cómo han cambiado y están cambiando los niveles de CO\(_2\), planteamos dos preguntas. 
+
+\bi
+\item ¿qué tan rápido estaba aumentando el CO\(_2\) desde 1950 hasta 2017
+\item ¿qué tan rápido están aumentando los niveles de CO\(_2\) en 2017?
+\ei
+
+\end{frame}
+
+%-------
+\begin{frame}{Intro...}
+
+\centering 
+\includegraphics[width=0.75\textwidth]{./img/Fig1.PNG}
+
+\end{frame}
+
+%--------
+\begin{frame}{Introducción}
+
+Antes de contestar las interrogantes, vamos a plantear algunas definiciones.
+
+\begin{block}{Pendiente de una línea secante}
+La pendiente de una línea secante desde $(a, f(a))$ hasta $(b, f(b))$ es
+
+\be
+\frac{f(b)-f(a)}{b-a}
+\ee
+
+También es la razón de cambio promedio de una función desde $x=a$ hasta $x=b$.
+\end{block}
+\end{frame}
+
+%-------
+\begin{frame}{Ejemplo}
+
+\textbf{\rojo{Ejercicio}}
+
+Suponga que $R(x) = 100x - 4x^2$ es el ingreso en dólares por la venta de $x$ widgets. Calcule e interprete la pendiente de la recta secante desde $x = 5$ hasta $x = 10$.
+
+En promedio, los ingresos aumentaron 40 dólares por widget cuando el número de widgets vendidos aumentó de 5 a 10 widgets.
+
+\pause
+
+\textbf{\azul{Solución}}
+
+$R(10) = 100(10) - 4(10^2) = \$ 600$
+
+$R(5) = 100(5) - 4(5^2) = \$ 400$
+
+
+Sustituyendo
+
+$$
+\frac{\$ 600 - \$ 400}{10 \text{widgets} - 5 \text{widgets}} = 40 \text{dólares/widgets}
+$$
+
+\end{frame}
+
+
+
+
+
+%-------
+\begin{frame}[fragile]{En R}
+
+\begin{verbatim}
+\end{verbatim}
+  > CO2<-function(t){0.0134594696825104*t?2+
+        0.520632601928747*t+310.423363171355}
+        > a<-0
+        > b<-67
+        > (CO2(b)-CO2(a))/(b-a)
+\end{frame}
+
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+%-------
+%\begin{frame}{}
+%\end{frame}
+
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+%{\setbeamercolor{palette primary}{fg=white, bg=black}
+%\begin{frame}[standout]
+%  ?Preguntas?
+%\end{frame}
+%}
+
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
+%\begin{frame}[standout]
+%  ?Gracias!
+%\end{frame}
+%-----------------------------------------------------------------
+\end{document}
+%-----------------------------------------------------------------
+%-----------------------------------------------------------------
