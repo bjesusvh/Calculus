@@ -159,17 +159,11 @@ El $\lim_{x \rightarrow a} f(x) = L$, si para todo $\epsilon > 0$ existe un $\de
 Si $0 < |x-a| < \delta$, entomnces $|f(x) - L| < \epsilon$
 """
 
-# ╔═╡ f0e00983-08fc-490d-b892-fcc1428008f8
-begin
-	Markdown.raw"""
-	![](/Users/bjesusvh/MEGA/github/Calculus/Pluto/limite.png)
-	"""
-end
-
 # ╔═╡ 012217b3-524f-4094-8e6d-099fa7443006
 begin
-	url1 = "https://github.com/bjesusvh/Calculus/blob/main/Pluto/limite.png"
-	nombre1 = download(url1)
+	# Use the raw URL of the image
+	url1 = "https://raw.githubusercontent.com/bjesusvh/Calculus/main/Pluto/limite.png"
+	nombre1 = download(url1, "limite.png")
 	limite = load(nombre1)
 end
 
@@ -1619,7 +1613,6 @@ version = "1.4.1+1"
 # ╟─bf40b4c1-161f-4b97-8b57-08b8522b31fa
 # ╟─70c8cf37-bd3e-4376-92a7-e9b5ad8c82db
 # ╟─d28fa0a0-63b0-4a92-abf4-46cb8800bf41
-# ╠═f0e00983-08fc-490d-b892-fcc1428008f8
-# ╠═012217b3-524f-4094-8e6d-099fa7443006
+# ╟─012217b3-524f-4094-8e6d-099fa7443006
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
