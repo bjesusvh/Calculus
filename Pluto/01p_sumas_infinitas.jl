@@ -14,160 +14,357 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ a49d7d88-eebf-4ba3-86d6-f0419fc1061c
+# ╔═╡ 78f73ab8-fec8-4104-8537-c1184fffb952
 begin
-	using Random
-	using Statistics
+	using PlutoTeachingTools
 	using Plots
-	using Distributions
 	using PlutoUI
 	using LaTeXStrings
 end
 
-# ╔═╡ 4fd05188-b53d-4a51-9545-8ec012a91320
+# ╔═╡ 90f265f0-aab6-4453-a476-114b2a5d4f51
+TableOfContents()
+
+# ╔═╡ f909801e-56a0-11ef-13a8-b792fd18ab74
 md"""
-# Razón de cambio (preliminares)
+# Sumas infinitas y sucesiones
 """
 
-# ╔═╡ d343d317-4704-4436-ac95-ce4a63cdb05a
+# ╔═╡ c65b6e96-6579-4288-9181-599d7d4dd9d7
 md"""
+Una suma infinita, o como suele decirse en matemáticas, una serie, es una suma formada por infinitos términos, por ejemplo,
 
-### Concentración de $CO_2$
+$1+1+1+1+1+1+\ldots$
 
-La concentración promedio anual (ppm) de $CO_2$ atmosférico en Mauna Loa ([Wikipedia](https://es.wikipedia.org/wiki/Mauna_Loa)), en partes por millón (ppm), $t$ años después de 1950 (año 0), está dada por la siguiente función:
-
-$$\text{CO}_{2}(t) = 0.0134594696825t^2 + 0.520632601929t + 310.423363171$$
-
+los puntos sucesivos significan que los sumandos nunca terminan.
 """
 
-# ╔═╡ 5e166a34-54db-11ef-1063-dfd78fe4d528
+# ╔═╡ 2d382b92-4b95-4d8f-b52c-1d13d80bc89f
+question_box(md"¿Cuál es el resultado de la suma anterior?")
+
+# ╔═╡ 6fb3e456-514a-4c3b-b6ed-610d8d8365a0
+question_box(md"""¿Cuál será el resultado de la siguiente suma?
+$1+2+3+4+5+6+\ldots$
+""")
+
+# ╔═╡ 60b25b9e-cf74-44d6-874c-c84db57f6bee
+hint(md"""**¿Será cierto que cada vez que sumamos infinitos números el resultado siempre es $\infty$?**
+
+Soprendentemente, la respuesta a esta pregunta es **NO**, ya que es posible sumar infinitos términos de tal modo que el resultado sea finito.
+""")
+
+# ╔═╡ 89349982-3f52-4222-83b7-441bb1332d8b
+md"""
+¿Cuál será el resultado de la siguiente suma?
+
+$\frac{1}{2}+\frac{1}{4}+\frac{1}{8}+\frac{1}{16}+\frac{1}{32}+\frac{1}{64}+\ldots$
+"""
+
+# ╔═╡ e78a87b3-ca54-47a1-802a-0e09a2743c1e
+md"""
+Esta serie se puede expresar como una suma infinita:
+
+$\sum_{k=1}^{\infty} \frac{1}{2^k}$
+
+La suma de los primeros \(n\) términos de la serie es:
+
+$S_n = \sum_{k=1}^{n} \frac{1}{2^k}$
+"""
+
+# ╔═╡ 144e3204-dd4f-4692-9104-976ec943b9ea
 begin
-	function co2(t)
-		return 0.0134594696825*t^2 + 0.520632601929*t + 310.423363171
+	function suma1(n) 
+		k = 1:1:n
+		return sum((1.0./2.0.^k))
 	end
 end
 
-# ╔═╡ 0a955a82-4bfd-47b5-a52f-8cb6763c8920
+# ╔═╡ 30122eb1-2ec5-45e6-a8a6-2bfb817694ae
 begin
-	t = 0:1:100
-	conc = co2.(t)
-	g1 = plot(t, conc, label = false, xlabel = "Tiempo (años)", 
-		ylabel = "Concentración de CO2 (ppm)")
+	n = @bind n Slider(1:1:100, 1, true)
+	md"n = $(n)"
 end
 
-# ╔═╡ 6136982e-b873-4504-949a-8455bb64165e
+# ╔═╡ 8dc0fd1d-9e8e-4aa1-8848-8a4d6389c7b1
+begin
+	sumas = [suma1(n) for n in 1:n]
+	scatter(1:1:n, sumas, label = "", alpha = 0.4, c="#e6550d")
+	xlabel!("n")
+	ylabel!("Suma")
+end
+
+# ╔═╡ 5f3f3b65-bcd4-463e-a05f-2211f46a49ea
 md"""
+Cuando una serie tiene como resultado una un número finito, de dice que la serie es **convergente**, por el contrario, si el resultado de la suma es $\infty$, entonces la serie es **divergente**.
 
-Para comprender cómo han cambiado y están cambiando los niveles de $CO_2$, se plantean dos preguntas. 
+**Otra serie**
 
-+ ¿qué tan rápido estaba aumentando el $CO_2$ desde 1950 (año 0) hasta 2017 (año 67)
-+ ¿qué tan rápido están aumentando los niveles de $CO_2$ en 2017?
+Analicemos ahora la siguiente serie
 
-Antes de contestar las interrogantes, vamos a plantear algunas definiciones.
+$1 + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \frac{1}{5} + \ldots$
+
+¿Es convergente o divergente?
+
+Para resolver el problema vamos a plantearla tal como lo hizo Jacob Bernouilli en su artículo de 1684.
+
+Retomemos la serie
+
+$1 + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \frac{1}{5} + \frac{1}{6} + \frac{1}{7} \ldots$
+
+Primero agrupamos
+
+$1 + \frac{1}{2} + \left( \frac{1}{3} + \frac{1}{4} \right) + \left( \frac{1}{5} + \frac{1}{6} + \frac{1}{7} + \frac{1}{8}  \right) + \left( \frac{1}{9} + \frac{1}{10} + \frac{1}{11} + \frac{1}{12} + \frac{1}{13} + \frac{1}{14} + \frac{1}{15} + \frac{1}{16} \right) + \ldots$
+
+Observemos los términos del primer paréntesis:
+
+$\frac{1}{3} + \frac{1}{4}.$
+
+El número 1/4 es más pequeño que ambos, por lo que puede afirmarse que:
+
+$\frac{1}{3} + \frac{1}{4} \geq \frac{1}{4} + \frac{1}{4}.$
+
+Por otra parte, como
+
+$\frac{1}{4} + \frac{1}{4} = \frac{1}{2},$
+
+puede concluirse que
+
+$\frac{1}{3} + \frac{1}{4} \geq \frac{1}{2}.$
+
+La misma deducción puede hacerse para el segundo paréntesis. Note que sumar 1/8 cuatro veces es igual a 1/2:
+
+$\frac{1}{5} + \frac{1}{6} + \frac{1}{7} + \frac{1}{8} \geq \frac{1}{8} + \frac{1}{8} + \frac{1}{8} + \frac{1}{8}.$
+
+Luego para el tercer paréntesis:
+
+$\frac{1}{9} + \frac{1}{10} + \frac{1}{11} + \frac{1}{12} + \frac{1}{13} + \frac{1}{14} + \frac{1}{15} + \frac{1}{16}$
+
+$\geq$
+
+$\frac{1}{16} + \frac{1}{16} + \frac{1}{16} + \frac{1}{16} + \frac{1}{16} + \frac{1}{16} + \frac{1}{16} + \frac{1}{16}.$
+
+Y así sucesivamente. Por tanto, la suma total no puede ser menos que 
+
+$\frac{1}{2} + \frac{1}{2} + \frac{1}{2} + \frac{1}{2} + \frac{1}{2} + \ldots = \infty.$
+
+Por lo tanto, la serie analizada por Jacob Bernoulli no puede ser menos que infinito, y es una serie divergente.
 """
 
-# ╔═╡ abea80e5-7c37-4c8c-826e-1afbfe8f9b68
+# ╔═╡ ed528b13-17c1-4a86-b600-a482db7376e9
 md"""
+## Series geométricas
 
-## Pendiente de una línea secante
+Se llama serie geométrica a cualquiera que tenga esta forma.
 
-La pendiente de una línea secante desde $(a, f(a))$ hasta $(b, f(b))$ es
+$r + r^2 + r^3 + r^4 + \ldots$
 
-$$\frac{f(b)-f(a)}{b-a}$$
+Esta serie es convergente exactamente en los casos en $r$ está estrictamente comprendido entre -1 y 1 ($|r| < 1$). Cuando esto sucede, la serie de la suma es la siguiente:
 
-También es la razón de cambio promedio de una función desde $x=a$ hasta $x=b$.
+$r + r^2 + r^3 + r^4 + \ldots = \frac{r}{1-r}.$
+
+Por ejemplo, cuando $r=\frac{1}{2}$ obtenemos:
+
+$\frac{1}{2} + \left( \frac{1}{2} \right)^2 + \left( \frac{1}{2} \right)^3 +  \left( \frac{1}{2} \right)^4 + \ldots = \frac{\frac{1}{2}}{1-\frac{1}{2}} = 1.$
 """
 
-# ╔═╡ d6609b30-a633-4ffd-8c8a-a64ba949c3ab
+# ╔═╡ 887d8de3-be14-49e0-85db-13b83ca418e8
 md"""
-Para ejemplo, $a=0$ y $b=67$
+**Ejercicio en corto**
+
+Encuentra la suma de la serie infinita $\sum_{k=1}^{\infty} \left( \frac{1}{4} \right)^k$
 """
 
-# ╔═╡ 97e36a90-70ad-4229-a942-b338f5869b5f
+# ╔═╡ 90f2c582-d3f4-4da4-bcc1-3c28b782ee63
+md"""
+## Notación para sucesiones
+
+Formalmente denotaremos a cualquier sucesión como $\{A_1, A_2, \ldots , A_m\}$ o también como $\{A_n\}_{n=1}^m.$
+
++ Cuando una sucesión tiene infinidad de elementos, como los ejemplos anteriores, se le denominan sucesiones infinitas.
+
++ Cuando una sucesión tiene finitos elementos, entonces es una sucesión finita.
+
+**Ejemplos**:
+
+**1. Finanzas: Crecimiento de una inversión con interés compuesto**
+
+**Sucesión**: El valor de una inversión con interés compuesto anual del 5% y un depósito inicial de $1000.
+
+**Descripción**: Supongamos que depositas $1000 en una cuenta que paga un interés compuesto anual del 5%. La sucesión de valores de la inversión después de cada año es:
+
+$1000, \quad 1000 \cdot (1 + 0.05), \quad 1000 \cdot (1 + 0.05)^2, \quad 1000 \cdot (1 + 0.05)^3, \quad \ldots$
+
+**2. Ecología: Crecimiento de una población con tasa de crecimiento constante**
+
+**Sucesión**: El número de individuos en una población que crece a una tasa constante del 10% anual.
+
+**Descripción**: Supongamos que una población de animales tiene un tamaño inicial de 200 individuos y crece a una tasa constante del 10% anual. La sucesión del tamaño de la población después de cada año es:
+
+$200, \quad 200 \cdot (1 + 0.10), \quad 200 \cdot (1 + 0.10)^2, \quad 200 \cdot (1 + 0.10)^3, \quad \ldots$
+
+**3. Hidrología: Caída del nivel de agua en un reservorio con un patrón de evaporación**
+
+**Sucesión**: La disminución del nivel de agua en un reservorio que se reduce a una tasa constante del 2% mensual debido a la evaporación.
+
+**Descripción**: Supongamos que el nivel inicial del agua en el reservorio es de 5000 metros cúbicos y se reduce en un 2% cada mes. La sucesión del nivel de agua después de cada mes es:
+
+$5000, \quad 5000 \cdot (1 - 0.02), \quad 5000 \cdot (1 - 0.02)^2, \quad 5000 \cdot (1 - 0.02)^3, \quad \ldots$
+"""
+
+# ╔═╡ 40644ef6-e6e3-4f8a-95c0-05e6ae59a0fd
+md"""
+# Otra definición de Límites
+
+**Punto límite**. Un número $L \in \mathbb{R}$, se llama punto límite de una sucesión $\{A_n\}$, si para cualquier $\epsilon > 0$ (pequeño) hay una infinidad de elementos de la sucesión $\{A_n\}$ tales que:
+
+$|A_n  - L| < \epsilon.$
+
+Aquí $L=\lim_{n \rightarrow \infty A_n}$.
+"""
+
+# ╔═╡ e68929d8-94a3-4ecd-b6e5-b4880dbcd9f9
 begin
-	aa = 0
-	bb = 67
-	resultado = (co2(bb) - co2(aa))/(bb-aa)
+	N = @bind N Slider(1:1:500, 1, true)
+	md"n = $(N)"
 end
 
-# ╔═╡ 756f770c-9281-4a8a-b2e5-d0efe5b5f854
+# ╔═╡ 447a7415-4047-40a7-a68c-dc9882cc992b
+begin
+	ϵ = @bind ϵ Slider(0.005:0.001:0.1, 0.1, true)
+	md"ϵ = $(ϵ)"
+end
+
+# ╔═╡ eb161c94-ee10-4ec2-a0f1-4399b1450dc2
+begin
+	L = 1
+	suma2 = [suma1(n) for n in 1:N]
+	scatter(1:1:N, suma2, label = "", alpha = 0.2, c="#8856a7", ylim=(0.45,1.15))
+	hline!([L], label="Punto Límite $L", linestyle=:dash, color=:red)
+	hline!([L+ϵ], label=L"L + \epsilon", linestyle=:dash, color=:green)
+	hline!([L-ϵ], label=L"L - \epsilon", linestyle=:dash, color=:blue)
+	xlabel!("n")
+	ylabel!(L"A_n")
+	title!("Ilustración del Punto Límite")
+end
+
+# ╔═╡ 12d61a00-6c82-4c5b-b5de-1017d0895595
 md"""
-Poniendo el valor $resultado en contexto, podemos decir que los niveles promedio anuales de CO2 en el sitio de Mauna Loa aumentaron en promedio $resultado ppm por año desde 1950 hasta 2017.
+**Ejemplo de una sucesión que no converge**
 
-La segunda pregunta es más compleja ya que la pregunta aborda un cambio instantáneo.
+La sucesión $\{(-1)^n\}$ no converge.
+"""
 
-Podemos hacernos a la ídea de que hacemos un zoom a la gráfica anterior muy cerca del valor en x de 67, de modo que la línea secante y la gráfica sean indistinguibles.
+# ╔═╡ c5089269-efa4-4247-b518-321db9c79b4f
+begin
+	m = @bind m Slider(5:1:100, 5, true)
+	md"n = $m"
+end
 
-Nos podemos acercar una pequeña cantidad $h$ tanto a la izquierda como a la derecha.
+# ╔═╡ eff7d2cd-1fda-4bf4-a842-f06afe6512ef
+begin
+   function suma3(m)
+     (-1)^m
+   end
+end
+
+# ╔═╡ 4d72022a-0012-43bc-aee6-c322f0bdf8a5
+begin
+	y = [suma3(i) for i in 1:m]
+	scatter(1:1:m, y, label = "", alpha = 0.75, c="blue", ylim = (-2,2))
+	xlabel!("n")
+	ylabel!(L"A_n")
+	title!("Sucesión nunca converge")
+end
+
+# ╔═╡ 944b5b6d-8675-480a-8470-89733661725d
+md"""
+**Valor absoluto**
+
+El **valor absoluto** de un número real \( x \), denotado como \( |x| \), se define como:
+
+$|x| =
+\begin{cases} 
+x & \text{si } x \geq 0, \\
+-x & \text{si } x < 0.
+\end{cases}$
+
+En palabras, el valor absoluto de un número es su magnitud sin tener en cuenta su signo. Es decir, el valor absoluto de un número es la distancia de ese número al cero en la recta numérica. Por lo tanto:
+
+- Si \( x \) es un número positivo o cero, \( |x| = x \).
+- Si \( x \) es un número negativo, \( |x| = -x \), que convierte a \( x \) en un número positivo.
+"""
+
+# ╔═╡ 963c3943-d326-4110-b600-3387d1fbcb5c
+begin
+	xx = -5.0:0.1:5
+	yy = abs.(xx)
+	plot(xx, yy, label = false, width = 2)
+	xlabel!(L"x")
+	ylabel!(L"|x|")
+end
+
+# ╔═╡ 9c711db0-bfc2-4bf3-8316-1f150dd72fe0
+md"# Sumas infinitas en probabilidad"
+
+# ╔═╡ d5b605d4-01f7-412b-a80e-402979b77453
+md"""
+Una de las aplicaciones de los límites y sumas infinitas ocurre de manera frecuente en probabilidad y estadística.
+
+Uno de los axiomas de la probabilidad dice que para que una función $p(x)$ sea una función de probabilidad, tiene que cumplir que 
+
+$\sum_{x \in \mathcal{X}(\Omega)} p(x) = 1.$
+
+**Ejemplo**. Sea $X$ una variable aleatoria discreta con función (de masa) de probabilidad
 
 
-$$\frac{f(a+h)-f(a-h)}{a+h-(a-h)}$$
+$p(x)=\left\{
+\begin{array}{cc}
+	\left( \frac{1}{2} \right)^x & \text{para } x = \{1,2,3,...,\infty\} \\
+	0 & \text{si } x \notin \{1,2,3,...,\infty\}
+\end{array}
+\right.$
 
 """
 
-# ╔═╡ 34dab6a6-c0af-4199-a6d2-2f359bf902f7
-begin
-	h = @bind h Slider(0.0001:0.0001:30, 30.0, true)
-	md"h: $(h)"
-end
-
-# ╔═╡ 28b08db4-7466-4177-97ff-fa38afaf1dd9
-begin
-	a = @bind a Slider(25.0:1.0:75.0, 67.0, true)
-	md"a: $(a)"
-end
-
-# ╔═╡ 2da62cc8-66c7-49e8-b203-7c0080cde5e7
-begin
-	function sec(a,h)
-		(co2(a+h) - co2(a-h))/(a+h-(a-h))
-	end
-end
-
-# ╔═╡ 14c45171-f8b4-4680-a699-c5c5d71687c9
-begin
-	cambio = sec(a, h)
-end
-
-# ╔═╡ 8680b657-be75-4b70-b1e2-52c68af38aaf
-begin
-	t_values = 0:0.01:100
-	co2_values = co2.(t_values)
-
-	plot(t_values, co2_values, label="", xlabel="t", ylabel="co2", legend=:topright)
-
-	y1 = co2.(a-h)
-	m = sec(a, h)
-	x1 =  a - h
-
-	# Generar la recta secante con la pendiente calculada
-	line_values = y1 .+ m * (t_values .- x1)
-
-	plot!(t_values, line_values, label="", linestyle=:dash, color=:red)
-	scatter!([a], [co2(a)], color=:red, label="", markersize=8)
-end
-
-# ╔═╡ 957f6dc6-4d1a-46a6-bd68-57776b9203f9
+# ╔═╡ e17d1dd7-460c-4b87-9535-9735395ae471
 md"""
-¿Qué significa el valor de la secante = $m? 
+Es decir, se debe probar que 
 
-Respuesta: En el año $a, los niveles anuales promedio de CO2 en el sitio de Mauna Loa aumentaron  a un ritmo estimado de $m ppm por año.
+$\left( \frac{1}{2} \right)^1 + \left( \frac{1}{2} \right)^2 + \left( \frac{1}{2} \right)^3 + \ldots = 1$
+
+
+Usando límites
+
+$\sum_{x=1}^{\infty} \left( \frac{1}{2} \right)^x = \lim_{n \to \infty} 
+\sum_{x=1}^{n} \left( \frac{1}{2} \right)^x = \frac{1/2}{1-1/2} = 1$
 """
+
+# ╔═╡ aa38f6e3-462a-4280-8119-92034e63492d
+begin
+	s = @bind s Slider(1:1:100, 1, true)
+	md"n = $s"
+end
+
+# ╔═╡ 891b709a-ae01-4f52-8b21-3c570b021515
+begin
+	p(x) = (1/2)^x
+    w = 1:1:s
+    g = cumsum(p.(w))
+    scatter(w, g, label = false)
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-Distributions = "~0.25.109"
 LaTeXStrings = "~1.3.1"
 Plots = "~1.40.5"
+PlutoTeachingTools = "~0.2.15"
 PlutoUI = "~0.7.59"
 """
 
@@ -177,19 +374,13 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "6386b081fd7b9836b546cc1e33acd2d3dcf2c47b"
+project_hash = "9b3eb2c2e8765d1de40a2aacf59a038dc22f16f2"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
 git-tree-sha1 = "6e1d2a35f2f90a4bc7c2ed98079b2ba09c35b83a"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
 version = "1.3.2"
-
-[[deps.AliasTables]]
-deps = ["PtrArrays", "Random"]
-git-tree-sha1 = "9876e1e164b144ca45e9e3198d0b689cadfed9ff"
-uuid = "66dad0bd-aa9a-41b7-9441-69ab47430ed8"
-version = "1.1.3"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -218,11 +409,11 @@ git-tree-sha1 = "a2f1c8c668c8e3cb4cca4e57a8efdb09067bb3fd"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
 version = "1.18.0+2"
 
-[[deps.Calculus]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "f641eb0a4f00c343bbc32346e1217b86f3ce9dad"
-uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
-version = "0.5.1"
+[[deps.CodeTracking]]
+deps = ["InteractiveUtils", "UUIDs"]
+git-tree-sha1 = "7eee164f122511d3e4e1ebadb7956939ea7e1c77"
+uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
+version = "1.3.6"
 
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
@@ -247,10 +438,12 @@ deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "Requires", "Statist
 git-tree-sha1 = "a1f44953f2382ebb937d60dafbe2deea4bd23249"
 uuid = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 version = "0.10.0"
-weakdeps = ["SpecialFunctions"]
 
     [deps.ColorVectorSpace.extensions]
     SpecialFunctionsExt = "SpecialFunctions"
+
+    [deps.ColorVectorSpace.weakdeps]
+    SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
@@ -311,21 +504,9 @@ git-tree-sha1 = "9e2f36d3c96a820c678f2f1f1782582fcf685bae"
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 version = "1.9.1"
 
-[[deps.Distributions]]
-deps = ["AliasTables", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns"]
-git-tree-sha1 = "9c405847cc7ecda2dc921ccf18b47ca150d7317e"
-uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.25.109"
-
-    [deps.Distributions.extensions]
-    DistributionsChainRulesCoreExt = "ChainRulesCore"
-    DistributionsDensityInterfaceExt = "DensityInterface"
-    DistributionsTestExt = "Test"
-
-    [deps.Distributions.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-    DensityInterface = "b429d917-457f-4dbc-8f4c-0cc954292b1d"
-    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+[[deps.Distributed]]
+deps = ["Random", "Serialization", "Sockets"]
+uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[deps.DocStringExtensions]]
 deps = ["LibGit2"]
@@ -337,12 +518,6 @@ version = "0.9.3"
 deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 version = "1.6.0"
-
-[[deps.DualNumbers]]
-deps = ["Calculus", "NaNMath", "SpecialFunctions"]
-git-tree-sha1 = "5837a837389fccf076445fce071c8ddaea35a566"
-uuid = "fa6b7ba4-c1ee-5f82-b5fc-ecf0adba8f74"
-version = "0.6.8"
 
 [[deps.EpollShim_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -376,18 +551,6 @@ version = "4.4.4+1"
 
 [[deps.FileWatching]]
 uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
-
-[[deps.FillArrays]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "0653c0a2396a6da5bc4766c43041ef5fd3efbe57"
-uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "1.11.0"
-weakdeps = ["PDMats", "SparseArrays", "Statistics"]
-
-    [deps.FillArrays.extensions]
-    FillArraysPDMatsExt = "PDMats"
-    FillArraysSparseArraysExt = "SparseArrays"
-    FillArraysStatisticsExt = "Statistics"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -471,12 +634,6 @@ git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+1"
 
-[[deps.HypergeometricFunctions]]
-deps = ["DualNumbers", "LinearAlgebra", "OpenLibm_jll", "SpecialFunctions"]
-git-tree-sha1 = "f218fe3736ddf977e0e772bc9a586b2383da2685"
-uuid = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
-version = "0.3.23"
-
 [[deps.Hyperscript]]
 deps = ["Test"]
 git-tree-sha1 = "179267cfa5e712760cd43dcae385d7ea90cc25a4"
@@ -527,6 +684,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "c84a835e1a09b289ffcd2271bf2a337bbdda6637"
 uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "3.0.3+0"
+
+[[deps.JuliaInterpreter]]
+deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
+git-tree-sha1 = "5d3a5a206297af3868151bb4a2cf27ebce46f16d"
+uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
+version = "0.9.33"
 
 [[deps.LAME_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -675,6 +838,12 @@ git-tree-sha1 = "c1dd6d7978c12545b4179fb6153b9250c96b0075"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.3"
 
+[[deps.LoweredCodeUtils]]
+deps = ["JuliaInterpreter"]
+git-tree-sha1 = "1ce1834f9644a8f7c011eb0592b7fd6c42c90653"
+uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
+version = "3.0.1"
+
 [[deps.MIMEs]]
 git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
 uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
@@ -757,12 +926,6 @@ git-tree-sha1 = "a028ee3cb5641cccc4c24e90c36b0a4f7707bdf5"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
 version = "3.0.14+0"
 
-[[deps.OpenSpecFun_jll]]
-deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "13652491f6856acfd2db29360e1bbcd4565d04f1"
-uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
-version = "0.5.5+0"
-
 [[deps.Opus_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "51a08fb14ec28da2ec7a927c4337e4332c2a4720"
@@ -778,12 +941,6 @@ version = "1.6.3"
 deps = ["Artifacts", "Libdl"]
 uuid = "efcefdf7-47ab-520b-bdef-62a2eaa19f15"
 version = "10.42.0+1"
-
-[[deps.PDMats]]
-deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse"]
-git-tree-sha1 = "949347156c25054de2db3b166c52ac4728cbad65"
-uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
-version = "0.11.31"
 
 [[deps.Pango_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "FriBidi_jll", "Glib_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl"]
@@ -845,6 +1002,24 @@ version = "1.40.5"
     ImageInTerminal = "d8c32880-2388-543b-8c61-d9f865259254"
     Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
+[[deps.PlutoHooks]]
+deps = ["InteractiveUtils", "Markdown", "UUIDs"]
+git-tree-sha1 = "072cdf20c9b0507fdd977d7d246d90030609674b"
+uuid = "0ff47ea0-7a50-410d-8455-4348d5de0774"
+version = "0.0.5"
+
+[[deps.PlutoLinks]]
+deps = ["FileWatching", "InteractiveUtils", "Markdown", "PlutoHooks", "Revise", "UUIDs"]
+git-tree-sha1 = "8f5fa7056e6dcfb23ac5211de38e6c03f6367794"
+uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
+version = "0.1.6"
+
+[[deps.PlutoTeachingTools]]
+deps = ["Downloads", "HypertextLiteral", "LaTeXStrings", "Latexify", "Markdown", "PlutoLinks", "PlutoUI", "Random"]
+git-tree-sha1 = "5d9ab1a4faf25a62bb9d07ef0003396ac258ef1c"
+uuid = "661c6b06-c737-4d37-b85c-46df65de6f69"
+version = "0.2.15"
+
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
 git-tree-sha1 = "ab55ee1510ad2af0ff674dbcced5e94921f867a9"
@@ -866,11 +1041,6 @@ version = "1.4.3"
 [[deps.Printf]]
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-
-[[deps.PtrArrays]]
-git-tree-sha1 = "f011fbb92c4d401059b2212c05c0601b70f8b759"
-uuid = "43287f4e-b6f4-7ad1-bb20-aadabca52c3d"
-version = "1.2.0"
 
 [[deps.Qt6Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Vulkan_Loader_jll", "Xorg_libSM_jll", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_cursor_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "libinput_jll", "xkbcommon_jll"]
@@ -895,12 +1065,6 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Qt6Base_jll", "Qt6Declarative_jll"
 git-tree-sha1 = "729927532d48cf79f49070341e1d918a65aba6b0"
 uuid = "e99dba38-086e-5de3-a5b1-6e4c66e897c3"
 version = "6.7.1+1"
-
-[[deps.QuadGK]]
-deps = ["DataStructures", "LinearAlgebra"]
-git-tree-sha1 = "e237232771fdafbae3db5c31275303e056afaa9f"
-uuid = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
-version = "2.10.1"
 
 [[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
@@ -939,17 +1103,11 @@ git-tree-sha1 = "838a3a4188e2ded87a4f9f184b4b0d78a1e91cb7"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.3.0"
 
-[[deps.Rmath]]
-deps = ["Random", "Rmath_jll"]
-git-tree-sha1 = "f65dcb5fa46aee0cf9ed6274ccbd597adc49aa7b"
-uuid = "79098fc4-a85e-5d69-aa6a-4863f24498fa"
-version = "0.7.1"
-
-[[deps.Rmath_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "d483cd324ce5cf5d61b77930f0bbd6cb61927d21"
-uuid = "f50d1b31-88e8-58de-be2c-1cc44531875f"
-version = "0.4.2+0"
+[[deps.Revise]]
+deps = ["CodeTracking", "Distributed", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "REPL", "Requires", "UUIDs", "Unicode"]
+git-tree-sha1 = "7b7850bb94f75762d567834d7e9802fc22d62f9c"
+uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
+version = "3.5.18"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -989,18 +1147,6 @@ deps = ["Libdl", "LinearAlgebra", "Random", "Serialization", "SuiteSparse_jll"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 version = "1.10.0"
 
-[[deps.SpecialFunctions]]
-deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
-git-tree-sha1 = "2f5d4697f21388cbe1ff299430dd169ef97d7e14"
-uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "2.4.0"
-
-    [deps.SpecialFunctions.extensions]
-    SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
-
-    [deps.SpecialFunctions.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -1017,24 +1163,6 @@ deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missin
 git-tree-sha1 = "5cf7606d6cef84b543b483848d4ae08ad9832b21"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.34.3"
-
-[[deps.StatsFuns]]
-deps = ["HypergeometricFunctions", "IrrationalConstants", "LogExpFunctions", "Reexport", "Rmath", "SpecialFunctions"]
-git-tree-sha1 = "cef0472124fab0695b58ca35a77c6fb942fdab8a"
-uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
-version = "1.3.1"
-
-    [deps.StatsFuns.extensions]
-    StatsFunsChainRulesCoreExt = "ChainRulesCore"
-    StatsFunsInverseFunctionsExt = "InverseFunctions"
-
-    [deps.StatsFuns.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
-
-[[deps.SuiteSparse]]
-deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
-uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
 [[deps.SuiteSparse_jll]]
 deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
@@ -1416,21 +1544,36 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╟─4fd05188-b53d-4a51-9545-8ec012a91320
-# ╠═a49d7d88-eebf-4ba3-86d6-f0419fc1061c
-# ╠═d343d317-4704-4436-ac95-ce4a63cdb05a
-# ╠═5e166a34-54db-11ef-1063-dfd78fe4d528
-# ╠═0a955a82-4bfd-47b5-a52f-8cb6763c8920
-# ╠═6136982e-b873-4504-949a-8455bb64165e
-# ╟─abea80e5-7c37-4c8c-826e-1afbfe8f9b68
-# ╟─d6609b30-a633-4ffd-8c8a-a64ba949c3ab
-# ╠═97e36a90-70ad-4229-a942-b338f5869b5f
-# ╟─756f770c-9281-4a8a-b2e5-d0efe5b5f854
-# ╠═34dab6a6-c0af-4199-a6d2-2f359bf902f7
-# ╠═28b08db4-7466-4177-97ff-fa38afaf1dd9
-# ╟─2da62cc8-66c7-49e8-b203-7c0080cde5e7
-# ╟─14c45171-f8b4-4680-a699-c5c5d71687c9
-# ╟─8680b657-be75-4b70-b1e2-52c68af38aaf
-# ╠═957f6dc6-4d1a-46a6-bd68-57776b9203f9
+# ╠═90f265f0-aab6-4453-a476-114b2a5d4f51
+# ╟─f909801e-56a0-11ef-13a8-b792fd18ab74
+# ╠═78f73ab8-fec8-4104-8537-c1184fffb952
+# ╟─c65b6e96-6579-4288-9181-599d7d4dd9d7
+# ╟─2d382b92-4b95-4d8f-b52c-1d13d80bc89f
+# ╟─6fb3e456-514a-4c3b-b6ed-610d8d8365a0
+# ╟─60b25b9e-cf74-44d6-874c-c84db57f6bee
+# ╟─89349982-3f52-4222-83b7-441bb1332d8b
+# ╟─e78a87b3-ca54-47a1-802a-0e09a2743c1e
+# ╟─144e3204-dd4f-4692-9104-976ec943b9ea
+# ╟─30122eb1-2ec5-45e6-a8a6-2bfb817694ae
+# ╟─8dc0fd1d-9e8e-4aa1-8848-8a4d6389c7b1
+# ╟─5f3f3b65-bcd4-463e-a05f-2211f46a49ea
+# ╟─ed528b13-17c1-4a86-b600-a482db7376e9
+# ╟─887d8de3-be14-49e0-85db-13b83ca418e8
+# ╟─90f2c582-d3f4-4da4-bcc1-3c28b782ee63
+# ╟─40644ef6-e6e3-4f8a-95c0-05e6ae59a0fd
+# ╠═e68929d8-94a3-4ecd-b6e5-b4880dbcd9f9
+# ╟─447a7415-4047-40a7-a68c-dc9882cc992b
+# ╟─eb161c94-ee10-4ec2-a0f1-4399b1450dc2
+# ╟─12d61a00-6c82-4c5b-b5de-1017d0895595
+# ╠═c5089269-efa4-4247-b518-321db9c79b4f
+# ╠═eff7d2cd-1fda-4bf4-a842-f06afe6512ef
+# ╟─4d72022a-0012-43bc-aee6-c322f0bdf8a5
+# ╟─944b5b6d-8675-480a-8470-89733661725d
+# ╟─963c3943-d326-4110-b600-3387d1fbcb5c
+# ╠═9c711db0-bfc2-4bf3-8316-1f150dd72fe0
+# ╟─d5b605d4-01f7-412b-a80e-402979b77453
+# ╟─e17d1dd7-460c-4b87-9535-9735395ae471
+# ╠═aa38f6e3-462a-4280-8119-92034e63492d
+# ╠═891b709a-ae01-4f52-8b21-3c570b021515
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

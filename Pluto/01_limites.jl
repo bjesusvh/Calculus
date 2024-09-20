@@ -6,7 +6,7 @@ using InteractiveUtils
 
 # ╔═╡ b7912dc9-cbe8-44e1-865a-0729e964986d
 begin
-	using PlutoUI, Plots, SymPy, LaTeXStrings
+	using PlutoUI, Plots, SymPy, LaTeXStrings, DataFrames
 	using Colors, ColorVectorSpace, ImageShow, FileIO, ImageIO
 	using HypertextLiteral
 end
@@ -24,7 +24,14 @@ md"## Definición intuitiva del límite"
 md"""
 Si al aproximar $x$ lo suficientemente cerca de un número $a$ (sin ser $a$) tanto del lado izquierdo como del lado de derecho, $f(x)$ se aproxima a un número $L$, entonces el límite cuando $x$ tiende al número $a$ es $L$. Esto se escribe como:
 
-$\lim_{x \rightarrow a} f(x) = L$.
+$\lim_{x \rightarrow a} f(x) = L.$
+
++ donde $x \to a$ se lee "$x$ tiende a $a$",
++ para representar que "$x$ tiende a $a$ por la izquierda" se denota como $x \to a^{-}$
++ para representar que "$x$ tiende a $a$ por la derecha" se denota como $x \to a^{+}$
+
+de tal forma que cuando, $\lim_{x \to a^{-}} f(x) = \lim_{x \to a^{+}} f(x) = L$, entonces, $\lim_{x \to a} f(x) = L.$
+
 """
 
 # ╔═╡ ac95c2dd-89b2-446f-a061-dcc9dd88cc2e
@@ -37,7 +44,10 @@ $f(x) = \frac{x^2-9}{x-3}$
 # ╔═╡ d6efc951-daa2-48be-9ed0-9a022c5aeab0
 md"""
 *Solución*. La función no está definida cuando $x = 3$. Podemos evualar la función por la izquierda y por la derecha.
+"""
 
+# ╔═╡ 28e63445-645c-41c9-ba07-b8a7a106d2a4
+md"""
 Podemos graficar la función utilizando la simplificación
 
 $f(x) = \frac{x^2-9}{x-3} = \frac{(x+3)(x-3)}{x-3}=x+3$
@@ -51,13 +61,19 @@ begin
 	end
 
 	# Definir el rango de x
-	x = range(2, stop=4, length=1000)  # Excluir el punto x = 3
+	z = range(2, stop=4, length=1000)  # Excluir el punto x = 3
 
 	# Graficar la función
-	plot(x, f.(x), label=L"f(x) = \frac{x^2 - 9}{x - 3}", linewidth=2, color=:blue, xlabel="x", ylabel="f(x)", legend=:topright)
+	plot(z, f.(z), label=L"f(x) = \frac{x^2 - 9}{x - 3}", linewidth=2, color=:blue, xlabel="x", ylabel="f(x)", legend=:topright)
 
 	# Añadir el punto vacío en x=3
 	scatter!([3], [f(3.0001)], label="x = 3, no definida", marker=:circle, color=:white, ms=8, msc=:red, markerstrokewidth=2)
+end
+
+# ╔═╡ 04c5044e-d5a7-4a97-9e78-1f6ab007ee4a
+begin
+	x =  [2.9, 2.99, 2.999, 2.9999, 3.0001, 3.001, 3.01, 3.1]
+	datos = DataFrame(x=x, f_x = f.(x))
 end
 
 # ╔═╡ 1b82cb2c-644d-4e54-9119-4a8d8c57a379
@@ -80,7 +96,7 @@ $f(x)=\left\{
 \end{array}
 \right.$
 
-Determina el $\lim_{x \rightarrow -2} f(x)$.
+Determina el $\lim_{x \rightarrow 2} f(x)$.
 """
 
 # ╔═╡ e96d77d2-9368-45f8-bcc3-f76ab2a1c749
@@ -138,7 +154,7 @@ begin
 	plot(θ, f3.(θ), label=false, linewidth=2, color=:blue, xlabel=L"\theta", ylabel=L"f(\theta)", framestyle=:origin)
 
 	# Añadir una línea horizontal en y=1 para representar el valor del límite
-	hline!([1], label=false, color=:red, linestyle=:dash)
+	#hline!([1], label=false, color=:red, linestyle=:dash)
 	scatter!([-0], [f3(0.001)], label="", color=:white, marker=:circle, ms=8, msc=:red, markerstrokewidth=2)
 end
 
@@ -147,6 +163,15 @@ md"""
 Tenemos: $\lim_{\theta \rightarrow 0^{-}} \frac{sen \theta}{\theta}=1$ y $\lim_{\theta \rightarrow 0^{+}} \frac{sen \theta}{\theta}=1$.
 
 Entonces,  $\lim_{\theta \rightarrow 0^{-}} \frac{sen \theta}{\theta} = \lim_{\theta \rightarrow 0^{+}} \frac{sen \theta}{\theta}=1$ por tanto $\lim_{\theta \rightarrow 0} \frac{sen \theta}{\theta}=1$
+"""
+
+# ╔═╡ 3b0d6219-d61f-4509-8904-eca30528516e
+md"""
+### Ejercicio en corto
+
+Determina el siguiente límite
+
+$\lim_{x \to 2} (x^2 - 3x + 1)$
 """
 
 # ╔═╡ 70c8cf37-bd3e-4376-92a7-e9b5ad8c82db
@@ -167,11 +192,146 @@ begin
 	limite = load(nombre1)
 end
 
+# ╔═╡ 85a11e5c-237f-47fc-8297-7e70ed5f99be
+md"""
+
+### Ejemplo 1
+
+Demuestre que $\lim_{x \to 3} (2x-1)=5$
+
+
+**Solución:**
+
+Para un $\epsilon > 0$, necesitamos encontrar $\delta > 0$ tal que siempre que
+
+$0 < |x - 3| < \delta \implies |(2x - 1) - 5| < \epsilon$
+
+de donde
+
+$|(2x - 1) - 5| = |2x -6| = |2(x-3)|=|2||x-3|=2|x-3| < \epsilon,$
+
+entonces $|x-3| < \frac{\epsilon}{2}$, por lo que basta escoger $\delta = \epsilon/2$ para que $0 < |x-a|<\frac{\epsilon}{2}$.
+"""
+
+
+# ╔═╡ a8ce19e5-3fbd-4148-93e9-e3e19aedb564
+md"""
+### Ejemplo 2
+
+Demuestre que $\displaystyle{\lim_{x \to -1} \frac{x^2 - 5x -6}{x+1}=-7}$
+
+**Solución**:
+
+Si $0 < |x-(-1)| < \delta$, entonces $\displaystyle{\left|\frac{x^2 - 5x -6}{x+1} - (-7) \right| < \epsilon}$
+
+de donde $\displaystyle{\left|\frac{x^2 - 5x -6}{x+1} + 7 \right| = \left|\frac{x^2 - 5x -6 + 7x + 7}{x+1} \right|} = \left|\frac{x^2 + 2x + 1}{x+1} \right|$
+
+$=\left| \frac{(x+1)^2}{x+1} \right| = |x + 1| = |x - (-1)| < \epsilon,$
+
+por tanto se escoge un $\delta = \epsilon$.
+"""
+
+# ╔═╡ c11f3fd7-1477-4bad-af50-2e3e24f57303
+md"""
+### Ejemplo 3
+
+Si $\lim_{x \to 1} (2-3x)=-1$ y $\epsilon = 0.06$, determina el valor de $\delta$.
+
+**Solución**
+
+Se aplica la definición y se obtiene:
+
+Si $0 < |x-1| <\delta$, entonces $|(2-3x) - (-1)|<\epsilon$, donde $|3-3x| < \epsilon$
+
+$|3||1-x| < \epsilon$
+
+$|1-x| < \frac{\epsilon}{|3|}$
+
+Pero $|1-x|=|x-1|$, por tanto, $|x-1| < \frac{\epsilon}{3}$ y el valor de $\delta$ está determinado por:
+
+$\delta \leq \epsilon/3 \leq 0.06/3 \leq 0.02.$
+"""
+
+# ╔═╡ 0864b3f4-9336-4499-9f3f-f62aea4ca647
+md"# Teoremas"
+
+# ╔═╡ 85b97403-83d5-47fd-b127-0aecf7df5f7d
+md"""
+Si $f(x)$ y $g(x)$ son funciones, $c$ una constante y $n$ un número real, entonces:
+
+1 $\lim_{x \to a} c = c$
+
+2 $\lim_{x \to a}  x = a$
+
+3 $\lim_{x \to a} c \cdot f(x) = c \cdot \lim_{x \to a} f(x)$
+
+4 $\lim_{x \to a} \left[ f(x) \pm g(x) \right] = \lim_{x \to a} f(x) +  \lim_{x \to a} g(x)$
+
+5 $\displaystyle{\lim_{x \to a} \left[ f(x) \cdot g(x) \right] = \lim_{x \to a} f(x) \cdot  \lim_{x \to a} g(x)}$
+
+6 $\displaystyle{\lim_{x \to a} \frac{f(x)}{g(x)} = \frac{\lim_{x \to a} f(x)}{\lim_{x \to a} g(x)}}$ con $\lim_{x \to a} g(x) \neq 0$
+
+7 $\displaystyle{\lim_{x \to a} [f(x)]^n = \left[ \lim_{x \to a} f(x) \right]^n}$
+"""
+
+# ╔═╡ 731410cd-ffba-4302-a30b-4c1b5d5daac4
+md"""
+## Límites por evaluación
+
+El límite se obtiene al aplicar lo teoremas anteriores y evaluar el valor al cual tiende la variable en la función propuesta.
+"""
+
+# ╔═╡ 5a7ac2d3-ae67-4a49-b540-c3bfaf50bbf3
+md"""
+Si $f(x) = \frac{3-2x}{3+2x}$, determina el valor del $\lim_{x \to 1/2} f(x)$.
+"""
+
+# ╔═╡ a3ecaea4-ee5d-4059-91b8-c74e17b00893
+md"""
+
+**Solución**:
+
+Para determinar el valor de $\lim_{x \to \frac{1}{2}} f(x)$ donde $f(x) = \frac{3 - 2x}{3 + 2x}$, vamos a aplicar los teoremas de límites.
+
+$\lim_{x \to \frac{1}{2}} \frac{3 - 2x}{3 + 2x} = \frac{\lim_{x \to \frac{1}{2}} (3 - 2x)}{\lim_{x \to \frac{1}{2}} (3 + 2x)} = \frac{2}{4} = \frac{1}{2}$
+
+**Resultado**
+
+$\lim_{x \to \frac{1}{2}} f(x) = \frac{1}{2}$
+"""
+
+# ╔═╡ 69e2ff0d-009b-41d8-b2a1-65864da96f40
+md"## Límites cuando x tiende a infinito"
+
+# ╔═╡ 9ba95670-564b-4133-9358-d231775df459
+md"""
+Sea una función $f$ definida en el intervalo $(a, \infty)$. Si se tiene que
+
+$\lim_{x \to a} f(x) = L$
+
+Sabemos que $\infty$ no es un número, sin embargo, se acostumbra a decir "el límite de $f(x)$ cuando $x$ tiende a infinito es $L$".
+"""
+
+# ╔═╡ c8fe9ef8-570b-48bd-9dac-dcb431401d20
+md"""
+Por ejemplo, en la función exponencial, $f(x) = e^{x}$, tenemos que cuando $x \to -\infty$, $f(x)$ tiende a cero.
+"""
+
+# ╔═╡ 297a5b7b-3e03-42a9-9a97-cc19103ef776
+begin
+	h(w) = exp(w)
+	w = -2.5:0.01:2
+	plot(w, h.(w), label = false, framestyle =:origin, linewidth = 2, color =:blue)
+	xlabel!(L"x")
+	ylabel!(L"f(x)")
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
@@ -184,6 +344,7 @@ SymPy = "24249f21-da20-56a4-8eb1-6a02cf4ae2e6"
 [compat]
 ColorVectorSpace = "~0.10.0"
 Colors = "~0.12.11"
+DataFrames = "~1.6.1"
 FileIO = "~1.16.3"
 HypertextLiteral = "~0.9.5"
 ImageIO = "~0.6.8"
@@ -200,7 +361,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "96579eee57d36b9bc278d05c42d468794af6bd06"
+project_hash = "daf0317658a88f68237ba7d3b4e569325c728db5"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -322,16 +483,32 @@ git-tree-sha1 = "439e35b0b36e2e5881738abc8857bd92ad6ff9a8"
 uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.6.3"
 
+[[deps.Crayons]]
+git-tree-sha1 = "249fe38abf76d48563e2f4556bebd215aa317e15"
+uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
+version = "4.1.1"
+
 [[deps.DataAPI]]
 git-tree-sha1 = "abe83f3a2f1b857aac70ef8b269080af17764bbe"
 uuid = "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
 version = "1.16.0"
+
+[[deps.DataFrames]]
+deps = ["Compat", "DataAPI", "DataStructures", "Future", "InlineStrings", "InvertedIndices", "IteratorInterfaceExtensions", "LinearAlgebra", "Markdown", "Missings", "PooledArrays", "PrecompileTools", "PrettyTables", "Printf", "REPL", "Random", "Reexport", "SentinelArrays", "SortingAlgorithms", "Statistics", "TableTraits", "Tables", "Unicode"]
+git-tree-sha1 = "04c738083f29f86e62c8afc341f0967d8717bdb8"
+uuid = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+version = "1.6.1"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
 git-tree-sha1 = "1d0a14036acb104d9e89698bd408f63ab58cdc82"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 version = "0.18.20"
+
+[[deps.DataValueInterfaces]]
+git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
+uuid = "e2d170a0-9d28-54be-80f0-106bbe20a464"
+version = "1.0.0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -431,6 +608,10 @@ deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "1ed150b39aebcc805c26b93a8d0122c940f64ce2"
 uuid = "559328eb-81f9-559d-9380-de523a88c83c"
 version = "1.0.14+0"
+
+[[deps.Future]]
+deps = ["Random"]
+uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GLFW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Xorg_libXcursor_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll", "libdecor_jll", "xkbcommon_jll"]
@@ -555,6 +736,19 @@ git-tree-sha1 = "d1b1b796e47d94588b3757fe84fbf65a5ec4a80d"
 uuid = "d25df0c9-e2be-5dd7-82c8-3ad0b3e990b9"
 version = "0.1.5"
 
+[[deps.InlineStrings]]
+git-tree-sha1 = "45521d31238e87ee9f9732561bfee12d4eebd52d"
+uuid = "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
+version = "1.4.2"
+
+    [deps.InlineStrings.extensions]
+    ArrowTypesExt = "ArrowTypes"
+    ParsersExt = "Parsers"
+
+    [deps.InlineStrings.weakdeps]
+    ArrowTypes = "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+    Parsers = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
+
 [[deps.InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -570,6 +764,11 @@ weakdeps = ["Random", "RecipesBase", "Statistics"]
     IntervalSetsRecipesBaseExt = "RecipesBase"
     IntervalSetsStatisticsExt = "Statistics"
 
+[[deps.InvertedIndices]]
+git-tree-sha1 = "0dc7b50b8d436461be01300fd8cd45aa0274b038"
+uuid = "41ab1584-1d38-5bbf-9106-f11c6c58b48f"
+version = "1.3.0"
+
 [[deps.IrrationalConstants]]
 git-tree-sha1 = "630b497eafcc20001bba38a4651b327dcfc491d2"
 uuid = "92d709cd-6900-40b7-9082-c6be49f344b6"
@@ -579,6 +778,11 @@ version = "0.2.2"
 git-tree-sha1 = "42d5f897009e7ff2cf88db414a389e5ed1bdd023"
 uuid = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
 version = "1.10.0"
+
+[[deps.IteratorInterfaceExtensions]]
+git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
+uuid = "82899510-4779-5014-852e-03e436cf321d"
+version = "1.0.0"
 
 [[deps.JLFzf]]
 deps = ["Pipe", "REPL", "Random", "fzf_jll"]
@@ -990,6 +1194,12 @@ git-tree-sha1 = "ab55ee1510ad2af0ff674dbcced5e94921f867a9"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 version = "0.7.59"
 
+[[deps.PooledArrays]]
+deps = ["DataAPI", "Future"]
+git-tree-sha1 = "36d8b4b899628fb92c2749eb488d884a926614d3"
+uuid = "2dfb63ee-cc39-5dd5-95bd-886bf059d720"
+version = "1.4.3"
+
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
 git-tree-sha1 = "5aa36f7049a63a1528fe8f7c3f2113413ffd4e1f"
@@ -1001,6 +1211,12 @@ deps = ["TOML"]
 git-tree-sha1 = "9306f6085165d270f7e3db02af26a400d580f5c6"
 uuid = "21216c6a-2e73-6563-6e65-726566657250"
 version = "1.4.3"
+
+[[deps.PrettyTables]]
+deps = ["Crayons", "LaTeXStrings", "Markdown", "PrecompileTools", "Printf", "Reexport", "StringManipulation", "Tables"]
+git-tree-sha1 = "66b20dd35966a748321d3b2537c4584cf40387c7"
+uuid = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
+version = "2.3.2"
 
 [[deps.Printf]]
 deps = ["Unicode"]
@@ -1106,6 +1322,12 @@ git-tree-sha1 = "3bac05bc7e74a75fd9cba4295cde4045d9fe2386"
 uuid = "6c6a2e73-6563-6170-7368-637461726353"
 version = "1.2.1"
 
+[[deps.SentinelArrays]]
+deps = ["Dates", "Random"]
+git-tree-sha1 = "ff11acffdb082493657550959d4feb4b6149e73a"
+uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
+version = "1.4.5"
+
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
@@ -1181,6 +1403,12 @@ git-tree-sha1 = "5cf7606d6cef84b543b483848d4ae08ad9832b21"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.34.3"
 
+[[deps.StringManipulation]]
+deps = ["PrecompileTools"]
+git-tree-sha1 = "a04cabe79c5f01f4d723cc6704070ada0b9d46d5"
+uuid = "892a3eda-7b42-436c-8928-eab12a02cf0e"
+version = "0.3.4"
+
 [[deps.SuiteSparse_jll]]
 deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
 uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
@@ -1208,6 +1436,18 @@ version = "0.2.5"
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 version = "1.0.3"
+
+[[deps.TableTraits]]
+deps = ["IteratorInterfaceExtensions"]
+git-tree-sha1 = "c06b2f539df1c6efa794486abfb6ed2022561a39"
+uuid = "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
+version = "1.0.1"
+
+[[deps.Tables]]
+deps = ["DataAPI", "DataValueInterfaces", "IteratorInterfaceExtensions", "OrderedCollections", "TableTraits"]
+git-tree-sha1 = "598cd7c1f68d1e205689b1c2fe65a9f85846f297"
+uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+version = "1.12.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
@@ -1603,16 +1843,31 @@ version = "1.4.1+1"
 # ╟─818fb1a5-99ca-40f6-a841-f1ed37c5ce7e
 # ╟─ac95c2dd-89b2-446f-a061-dcc9dd88cc2e
 # ╟─d6efc951-daa2-48be-9ed0-9a022c5aeab0
+# ╟─04c5044e-d5a7-4a97-9e78-1f6ab007ee4a
+# ╟─28e63445-645c-41c9-ba07-b8a7a106d2a4
 # ╟─26ce57b7-345e-4dea-8a28-2efc184a0567
 # ╟─1b82cb2c-644d-4e54-9119-4a8d8c57a379
-# ╟─1c03dd2a-aea2-495c-bdbb-c3773f0e7360
+# ╠═1c03dd2a-aea2-495c-bdbb-c3773f0e7360
 # ╟─e96d77d2-9368-45f8-bcc3-f76ab2a1c749
 # ╟─63c19177-168a-49aa-9241-4613a40df28e
 # ╟─971f2a8a-3086-4c30-b2c9-9dba8005b82f
 # ╟─f22ff197-a3e1-496d-ad15-9d235f82b46e
 # ╟─bf40b4c1-161f-4b97-8b57-08b8522b31fa
+# ╟─3b0d6219-d61f-4509-8904-eca30528516e
 # ╟─70c8cf37-bd3e-4376-92a7-e9b5ad8c82db
 # ╟─d28fa0a0-63b0-4a92-abf4-46cb8800bf41
 # ╟─012217b3-524f-4094-8e6d-099fa7443006
+# ╟─85a11e5c-237f-47fc-8297-7e70ed5f99be
+# ╟─a8ce19e5-3fbd-4148-93e9-e3e19aedb564
+# ╟─c11f3fd7-1477-4bad-af50-2e3e24f57303
+# ╟─0864b3f4-9336-4499-9f3f-f62aea4ca647
+# ╟─85b97403-83d5-47fd-b127-0aecf7df5f7d
+# ╟─731410cd-ffba-4302-a30b-4c1b5d5daac4
+# ╟─5a7ac2d3-ae67-4a49-b540-c3bfaf50bbf3
+# ╟─a3ecaea4-ee5d-4059-91b8-c74e17b00893
+# ╟─69e2ff0d-009b-41d8-b2a1-65864da96f40
+# ╟─9ba95670-564b-4133-9358-d231775df459
+# ╟─c8fe9ef8-570b-48bd-9dac-dcb431401d20
+# ╟─297a5b7b-3e03-42a9-9a97-cc19103ef776
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

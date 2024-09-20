@@ -4,168 +4,163 @@
 using Markdown
 using InteractiveUtils
 
-# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
-macro bind(def, element)
-    quote
-        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
-        local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
-        el
-    end
+# ╔═╡ 63693812-55c0-42dc-9aaf-072911f671f7
+begin
+	using PlutoUI, Plots, LaTeXStrings
 end
 
-# ╔═╡ a49d7d88-eebf-4ba3-86d6-f0419fc1061c
-begin
-	using Random
-	using Statistics
-	using Plots
-	using Distributions
-	using PlutoUI
-	using LaTeXStrings
-end
+# ╔═╡ 64e8507a-5984-11ef-13dc-7f64909915e2
+TableOfContents()
 
-# ╔═╡ 4fd05188-b53d-4a51-9545-8ec012a91320
+# ╔═╡ 6b413755-22dd-4cb4-8243-0b9d52253bbe
+md"# Continuidad"
+
+# ╔═╡ c56233b3-9184-43e3-a923-217f5c7920c3
 md"""
-# Razón de cambio (preliminares)
+## Continuidad puntual
+
+Una función $f(x)$ es continua en el punto $x_0 \in \mathbb{R}$ si cumple con las siguientes condiciones:
+
+1 $f(x_0)$ está definida.
+
+2 $\displaystyle{\lim_{x \to x_0} f(x)}$ existe.
+
+3 $\displaystyle{\lim_{x \to x_0} f(x_0) = f(x_0)}$.
 """
 
-# ╔═╡ d343d317-4704-4436-ac95-ce4a63cdb05a
+# ╔═╡ afd36b80-fae1-48d6-a9ab-855df7135f60
 md"""
+**Ejemplo**. Determina si la función siguiente es continua en $x_0 = 1$
 
-### Concentración de $CO_2$
-
-La concentración promedio anual (ppm) de $CO_2$ atmosférico en Mauna Loa ([Wikipedia](https://es.wikipedia.org/wiki/Mauna_Loa)), en partes por millón (ppm), $t$ años después de 1950 (año 0), está dada por la siguiente función:
-
-$$\text{CO}_{2}(t) = 0.0134594696825t^2 + 0.520632601929t + 310.423363171$$
-
+$f(x)=\left\{
+\begin{array}{cc}
+	2x - 3 & \text{si } x < 1 \\
+	-x & \text{si } x \geq 1
+\end{array}
+\right.$
 """
 
-# ╔═╡ 5e166a34-54db-11ef-1063-dfd78fe4d528
+# ╔═╡ 07eb0915-eb45-4f2c-bc72-0c8c60087760
+md"""
+Se verifican las condiciones:
+
+1 $f(1) = -1$, la función está definida en $x_0$
+
+2 Se determinan los límites laterales:
+
+$\lim_{x \to 1^{-}} f(x) = \lim_{x \to 1^{-}} (2x -3) = 2(1) - 3 = -1$
+
+$\lim_{x \to 1^{+}} f(x) = \lim_{x \to 1^{+}} (-x) = -(1) = -1$
+
+Por lo tanto, $\displaystyle{\lim_{x \to 1} f(x) = -1}$
+
+3 Probar que el $\lim_{x \to 1} f(x) = f(1)$
+
+$\lim_{x \to 1} f(x) = f(1) = -1$
+
+Finalmente, es continua en $x_0 = 1$.
+"""
+
+# ╔═╡ f58d0b2f-036a-4fa7-ba19-701fc740c027
 begin
-	function co2(t)
-		return 0.0134594696825*t^2 + 0.520632601929*t + 310.423363171
+	# Definir la primera parte de la función para x <= -2
+	function g1(x)
+    	return 2x - 3
 	end
-end
 
-# ╔═╡ 0a955a82-4bfd-47b5-a52f-8cb6763c8920
-begin
-	t = 0:1:100
-	conc = co2.(t)
-	g1 = plot(t, conc, label = false, xlabel = "Tiempo (años)", 
-		ylabel = "Concentración de CO2 (ppm)")
-end
-
-# ╔═╡ 6136982e-b873-4504-949a-8455bb64165e
-md"""
-
-Para comprender cómo han cambiado y están cambiando los niveles de $CO_2$, se plantean dos preguntas. 
-
-+ ¿qué tan rápido estaba aumentando el $CO_2$ desde 1950 (año 0) hasta 2017 (año 67)
-+ ¿qué tan rápido están aumentando los niveles de $CO_2$ en 2017?
-
-Antes de contestar las interrogantes, vamos a plantear algunas definiciones.
-"""
-
-# ╔═╡ abea80e5-7c37-4c8c-826e-1afbfe8f9b68
-md"""
-
-## Pendiente de una línea secante
-
-La pendiente de una línea secante desde $(a, f(a))$ hasta $(b, f(b))$ es
-
-$$\frac{f(b)-f(a)}{b-a}$$
-
-También es la razón de cambio promedio de una función desde $x=a$ hasta $x=b$.
-"""
-
-# ╔═╡ d6609b30-a633-4ffd-8c8a-a64ba949c3ab
-md"""
-Para ejemplo, $a=0$ y $b=67$
-"""
-
-# ╔═╡ 97e36a90-70ad-4229-a942-b338f5869b5f
-begin
-	aa = 0
-	bb = 67
-	resultado = (co2(bb) - co2(aa))/(bb-aa)
-end
-
-# ╔═╡ 756f770c-9281-4a8a-b2e5-d0efe5b5f854
-md"""
-Poniendo el valor $resultado en contexto, podemos decir que los niveles promedio anuales de CO2 en el sitio de Mauna Loa aumentaron en promedio $resultado ppm por año desde 1950 hasta 2017.
-
-La segunda pregunta es más compleja ya que la pregunta aborda un cambio instantáneo.
-
-Podemos hacernos a la ídea de que hacemos un zoom a la gráfica anterior muy cerca del valor en x de 67, de modo que la línea secante y la gráfica sean indistinguibles.
-
-Nos podemos acercar una pequeña cantidad $h$ tanto a la izquierda como a la derecha.
-
-
-$$\frac{f(a+h)-f(a-h)}{a+h-(a-h)}$$
-
-"""
-
-# ╔═╡ 34dab6a6-c0af-4199-a6d2-2f359bf902f7
-begin
-	h = @bind h Slider(0.0001:0.0001:30, 30.0, true)
-	md"h: $(h)"
-end
-
-# ╔═╡ 28b08db4-7466-4177-97ff-fa38afaf1dd9
-begin
-	a = @bind a Slider(25.0:1.0:75.0, 67.0, true)
-	md"a: $(a)"
-end
-
-# ╔═╡ 2da62cc8-66c7-49e8-b203-7c0080cde5e7
-begin
-	function sec(a,h)
-		(co2(a+h) - co2(a-h))/(a+h-(a-h))
+	# Definir la segunda parte de la función para x > -2
+	function g2(x)
+    	return -x
 	end
+
+	# Rango de x para cada parte
+	x1 = range(-10, stop=0.999, length=500)
+	x2 = range(1, stop=10, length=500)
+
+	# Graficar las dos partes de la función
+	plot(x1, g1.(x1), linewidth=2, color=:blue, 
+		xlabel="x", ylabel="f(x)", label = false, framestyle=:origin)
+	
+	plot!(x2, g2.(x2), linewidth=2, color=:red, label = false)
+
+	# Añadir un punto sólido en x=-2 para g1 y un punto vacío para g2
+	scatter!([1], [g1(1)], label="", color=:white, marker=:circle, 
+		ms=8, msc=:blue, markerstrokewidth=2)
 end
 
-# ╔═╡ 14c45171-f8b4-4680-a699-c5c5d71687c9
-begin
-	cambio = sec(a, h)
-end
-
-# ╔═╡ 8680b657-be75-4b70-b1e2-52c68af38aaf
-begin
-	t_values = 0:0.01:100
-	co2_values = co2.(t_values)
-
-	plot(t_values, co2_values, label="", xlabel="t", ylabel="co2", legend=:topright)
-
-	y1 = co2.(a-h)
-	m = sec(a, h)
-	x1 =  a - h
-
-	# Generar la recta secante con la pendiente calculada
-	line_values = y1 .+ m * (t_values .- x1)
-
-	plot!(t_values, line_values, label="", linestyle=:dash, color=:red)
-	scatter!([a], [co2(a)], color=:red, label="", markersize=8)
-end
-
-# ╔═╡ 957f6dc6-4d1a-46a6-bd68-57776b9203f9
+# ╔═╡ e656a056-79e9-49f1-8fb8-c75c856080a8
 md"""
-¿Qué significa el valor de la secante = $m? 
+**Ejemplo**. Determina si la función siguiente es continua en $x = 1$ y $x=3$
 
-Respuesta: En el año $a, los niveles anuales promedio de CO2 en el sitio de Mauna Loa aumentaron  a un ritmo estimado de $m ppm por año.
+$f(x)=\left\{
+\begin{array}{cc}
+	x^2    & \text{si }   x \leq 1 \\
+	2x - 3 & \text{si }  1 < x \leq 3 \\
+	3      & \text{si }  3 < x
+\end{array}
+\right.$
+"""
+
+# ╔═╡ b9c46352-0e8b-480c-b3aa-56bf5dec3c05
+begin
+	h1(x) = x^2
+	h2(x) = 2x - 3
+	h3(x) = 3
+
+	z1 = -3.0:0.01:1.0
+	z2 = 1.0:0.01:3.0
+	z3 = 3.0:0.01:6.0
+
+	ps = [1,1,3]
+	gs = [h1.(ps[1]), h2.(ps[2]), h2.(ps[3])]
+	
+	plot(z1, h1.(z1), framestyle =:origin, col =:blue, label = L"f(x) = x^2", linewidth=2)
+	plot!(z2, h2.(z2), col =:red, label = L"f(x) = 2x -3", linewidth=2)
+	plot!(z3, h3.(z3), col =:green, label = L"f(x) = 3", linewidth=2)
+	scatter!(ps, gs, color = ["black", "white", "black"], label = "", ms=6)
+end
+
+# ╔═╡ 43f6f68f-0409-4064-b66d-a56e0d4de94f
+md"""
+**Solución**
+
+Se verifican las condiciones para $x_0=1$:
+
+Primero $f(1)= (1)^2 = 1,$ la función está definida en $x_0 = 1$
+
+Luego $\lim_{x \to 1^{+}} f(x) = \lim_{x \to 1^{+}} (2x -3) = 2(1)-3=-1$
+
+y $\lim_{x \to 1^{-}} f(x) = \lim_{x \to 1^{-}} x^2 = (1)^2 = 1$
+
+Dado que el límite $\lim_{x \to 1^{+}} f(x) \neq \lim_{x \to 1^{-}} f(x)$, entonces el límite no existe. Por lo tanto $f(x)$ **no es continua** en $x_0 = 1.$
+"""
+
+# ╔═╡ f57f5139-02dd-48b8-a11d-bc5fc60cb831
+md"""
+Se verifican las condiciones para $x_0=3$:
+
+Primero, $f(3)= 2(3)-3=3,$ la función está definida en $x_0 = 3.$
+
+Ahora, $\lim_{x \to 3^{+}} f(x) = \lim_{x \to 3^{+}} 3 = 3$
+
+y el, $\lim_{x \to 3^{+}} f(x) = \lim_{x \to 3^{+}} \left( 2(3) -3 \right) = 3$
+
+Se concluye que, $\displaystyle{\lim_{x \to 3^{+}} f(x) = \lim_{x \to 3^{-}} f(x)}$, por lo tanto, el $\lim_{x \to 3} f(x) = 3$
+"""
+
+# ╔═╡ 18d906b2-60ac-441f-aebd-ecd5e2ee88a7
+md"""
+Como $\lim_{x \to 3} f(x)$ y $f(x) = 3$, entonces, $\lim_{x \to 3} f(x) = f(3)$, por consiguiente, $f(x)$ es continua en $x_0 = 3.$
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-Distributions = "~0.25.109"
 LaTeXStrings = "~1.3.1"
 Plots = "~1.40.5"
 PlutoUI = "~0.7.59"
@@ -177,19 +172,13 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "6386b081fd7b9836b546cc1e33acd2d3dcf2c47b"
+project_hash = "e53f42b9c08f82b6c74bb3cb4a92ca1b08207e2e"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
 git-tree-sha1 = "6e1d2a35f2f90a4bc7c2ed98079b2ba09c35b83a"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
 version = "1.3.2"
-
-[[deps.AliasTables]]
-deps = ["PtrArrays", "Random"]
-git-tree-sha1 = "9876e1e164b144ca45e9e3198d0b689cadfed9ff"
-uuid = "66dad0bd-aa9a-41b7-9441-69ab47430ed8"
-version = "1.1.3"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -218,12 +207,6 @@ git-tree-sha1 = "a2f1c8c668c8e3cb4cca4e57a8efdb09067bb3fd"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
 version = "1.18.0+2"
 
-[[deps.Calculus]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "f641eb0a4f00c343bbc32346e1217b86f3ce9dad"
-uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
-version = "0.5.1"
-
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
 git-tree-sha1 = "b8fe8546d52ca154ac556809e10c75e6e7430ac8"
@@ -247,10 +230,12 @@ deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "Requires", "Statist
 git-tree-sha1 = "a1f44953f2382ebb937d60dafbe2deea4bd23249"
 uuid = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 version = "0.10.0"
-weakdeps = ["SpecialFunctions"]
 
     [deps.ColorVectorSpace.extensions]
     SpecialFunctionsExt = "SpecialFunctions"
+
+    [deps.ColorVectorSpace.weakdeps]
+    SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
@@ -311,22 +296,6 @@ git-tree-sha1 = "9e2f36d3c96a820c678f2f1f1782582fcf685bae"
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 version = "1.9.1"
 
-[[deps.Distributions]]
-deps = ["AliasTables", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns"]
-git-tree-sha1 = "9c405847cc7ecda2dc921ccf18b47ca150d7317e"
-uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.25.109"
-
-    [deps.Distributions.extensions]
-    DistributionsChainRulesCoreExt = "ChainRulesCore"
-    DistributionsDensityInterfaceExt = "DensityInterface"
-    DistributionsTestExt = "Test"
-
-    [deps.Distributions.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-    DensityInterface = "b429d917-457f-4dbc-8f4c-0cc954292b1d"
-    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
 [[deps.DocStringExtensions]]
 deps = ["LibGit2"]
 git-tree-sha1 = "2fb1e02f2b635d0845df5d7c167fec4dd739b00d"
@@ -337,12 +306,6 @@ version = "0.9.3"
 deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 version = "1.6.0"
-
-[[deps.DualNumbers]]
-deps = ["Calculus", "NaNMath", "SpecialFunctions"]
-git-tree-sha1 = "5837a837389fccf076445fce071c8ddaea35a566"
-uuid = "fa6b7ba4-c1ee-5f82-b5fc-ecf0adba8f74"
-version = "0.6.8"
 
 [[deps.EpollShim_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -376,18 +339,6 @@ version = "4.4.4+1"
 
 [[deps.FileWatching]]
 uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
-
-[[deps.FillArrays]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "0653c0a2396a6da5bc4766c43041ef5fd3efbe57"
-uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "1.11.0"
-weakdeps = ["PDMats", "SparseArrays", "Statistics"]
-
-    [deps.FillArrays.extensions]
-    FillArraysPDMatsExt = "PDMats"
-    FillArraysSparseArraysExt = "SparseArrays"
-    FillArraysStatisticsExt = "Statistics"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -470,12 +421,6 @@ deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll",
 git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+1"
-
-[[deps.HypergeometricFunctions]]
-deps = ["DualNumbers", "LinearAlgebra", "OpenLibm_jll", "SpecialFunctions"]
-git-tree-sha1 = "f218fe3736ddf977e0e772bc9a586b2383da2685"
-uuid = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
-version = "0.3.23"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -757,12 +702,6 @@ git-tree-sha1 = "a028ee3cb5641cccc4c24e90c36b0a4f7707bdf5"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
 version = "3.0.14+0"
 
-[[deps.OpenSpecFun_jll]]
-deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "13652491f6856acfd2db29360e1bbcd4565d04f1"
-uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
-version = "0.5.5+0"
-
 [[deps.Opus_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "51a08fb14ec28da2ec7a927c4337e4332c2a4720"
@@ -778,12 +717,6 @@ version = "1.6.3"
 deps = ["Artifacts", "Libdl"]
 uuid = "efcefdf7-47ab-520b-bdef-62a2eaa19f15"
 version = "10.42.0+1"
-
-[[deps.PDMats]]
-deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse"]
-git-tree-sha1 = "949347156c25054de2db3b166c52ac4728cbad65"
-uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
-version = "0.11.31"
 
 [[deps.Pango_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "FriBidi_jll", "Glib_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl"]
@@ -867,11 +800,6 @@ version = "1.4.3"
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
-[[deps.PtrArrays]]
-git-tree-sha1 = "f011fbb92c4d401059b2212c05c0601b70f8b759"
-uuid = "43287f4e-b6f4-7ad1-bb20-aadabca52c3d"
-version = "1.2.0"
-
 [[deps.Qt6Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Vulkan_Loader_jll", "Xorg_libSM_jll", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_cursor_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "libinput_jll", "xkbcommon_jll"]
 git-tree-sha1 = "492601870742dcd38f233b23c3ec629628c1d724"
@@ -895,12 +823,6 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Qt6Base_jll", "Qt6Declarative_jll"
 git-tree-sha1 = "729927532d48cf79f49070341e1d918a65aba6b0"
 uuid = "e99dba38-086e-5de3-a5b1-6e4c66e897c3"
 version = "6.7.1+1"
-
-[[deps.QuadGK]]
-deps = ["DataStructures", "LinearAlgebra"]
-git-tree-sha1 = "e237232771fdafbae3db5c31275303e056afaa9f"
-uuid = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
-version = "2.10.1"
 
 [[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
@@ -938,18 +860,6 @@ deps = ["UUIDs"]
 git-tree-sha1 = "838a3a4188e2ded87a4f9f184b4b0d78a1e91cb7"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.3.0"
-
-[[deps.Rmath]]
-deps = ["Random", "Rmath_jll"]
-git-tree-sha1 = "f65dcb5fa46aee0cf9ed6274ccbd597adc49aa7b"
-uuid = "79098fc4-a85e-5d69-aa6a-4863f24498fa"
-version = "0.7.1"
-
-[[deps.Rmath_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "d483cd324ce5cf5d61b77930f0bbd6cb61927d21"
-uuid = "f50d1b31-88e8-58de-be2c-1cc44531875f"
-version = "0.4.2+0"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -989,18 +899,6 @@ deps = ["Libdl", "LinearAlgebra", "Random", "Serialization", "SuiteSparse_jll"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 version = "1.10.0"
 
-[[deps.SpecialFunctions]]
-deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
-git-tree-sha1 = "2f5d4697f21388cbe1ff299430dd169ef97d7e14"
-uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "2.4.0"
-
-    [deps.SpecialFunctions.extensions]
-    SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
-
-    [deps.SpecialFunctions.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -1017,24 +915,6 @@ deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missin
 git-tree-sha1 = "5cf7606d6cef84b543b483848d4ae08ad9832b21"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.34.3"
-
-[[deps.StatsFuns]]
-deps = ["HypergeometricFunctions", "IrrationalConstants", "LogExpFunctions", "Reexport", "Rmath", "SpecialFunctions"]
-git-tree-sha1 = "cef0472124fab0695b58ca35a77c6fb942fdab8a"
-uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
-version = "1.3.1"
-
-    [deps.StatsFuns.extensions]
-    StatsFunsChainRulesCoreExt = "ChainRulesCore"
-    StatsFunsInverseFunctionsExt = "InverseFunctions"
-
-    [deps.StatsFuns.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
-
-[[deps.SuiteSparse]]
-deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
-uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
 [[deps.SuiteSparse_jll]]
 deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
@@ -1416,21 +1296,17 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╟─4fd05188-b53d-4a51-9545-8ec012a91320
-# ╠═a49d7d88-eebf-4ba3-86d6-f0419fc1061c
-# ╠═d343d317-4704-4436-ac95-ce4a63cdb05a
-# ╠═5e166a34-54db-11ef-1063-dfd78fe4d528
-# ╠═0a955a82-4bfd-47b5-a52f-8cb6763c8920
-# ╠═6136982e-b873-4504-949a-8455bb64165e
-# ╟─abea80e5-7c37-4c8c-826e-1afbfe8f9b68
-# ╟─d6609b30-a633-4ffd-8c8a-a64ba949c3ab
-# ╠═97e36a90-70ad-4229-a942-b338f5869b5f
-# ╟─756f770c-9281-4a8a-b2e5-d0efe5b5f854
-# ╠═34dab6a6-c0af-4199-a6d2-2f359bf902f7
-# ╠═28b08db4-7466-4177-97ff-fa38afaf1dd9
-# ╟─2da62cc8-66c7-49e8-b203-7c0080cde5e7
-# ╟─14c45171-f8b4-4680-a699-c5c5d71687c9
-# ╟─8680b657-be75-4b70-b1e2-52c68af38aaf
-# ╠═957f6dc6-4d1a-46a6-bd68-57776b9203f9
+# ╠═64e8507a-5984-11ef-13dc-7f64909915e2
+# ╟─6b413755-22dd-4cb4-8243-0b9d52253bbe
+# ╟─c56233b3-9184-43e3-a923-217f5c7920c3
+# ╟─63693812-55c0-42dc-9aaf-072911f671f7
+# ╟─afd36b80-fae1-48d6-a9ab-855df7135f60
+# ╟─07eb0915-eb45-4f2c-bc72-0c8c60087760
+# ╟─f58d0b2f-036a-4fa7-ba19-701fc740c027
+# ╟─e656a056-79e9-49f1-8fb8-c75c856080a8
+# ╟─b9c46352-0e8b-480c-b3aa-56bf5dec3c05
+# ╟─43f6f68f-0409-4064-b66d-a56e0d4de94f
+# ╟─f57f5139-02dd-48b8-a11d-bc5fc60cb831
+# ╟─18d906b2-60ac-441f-aebd-ecd5e2ee88a7
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

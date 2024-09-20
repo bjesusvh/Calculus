@@ -14,158 +14,328 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ a49d7d88-eebf-4ba3-86d6-f0419fc1061c
+# ╔═╡ 4dbcd5bd-2101-4079-9302-ae73d0da2165
 begin
-	using Random
-	using Statistics
-	using Plots
-	using Distributions
-	using PlutoUI
-	using LaTeXStrings
+	using PlutoUI, Plots, LaTeXStrings, DataFrames
 end
 
-# ╔═╡ 4fd05188-b53d-4a51-9545-8ec012a91320
-md"""
-# Razón de cambio (preliminares)
-"""
+# ╔═╡ 7b4ea28d-d17c-428b-92ed-e1b4251997fd
+TableOfContents()
 
-# ╔═╡ d343d317-4704-4436-ac95-ce4a63cdb05a
-md"""
+# ╔═╡ 66ab9d50-5b18-11ef-38e5-870a71594d22
+md"# La derivada"
 
+# ╔═╡ 1a71be63-ec12-4349-9ac9-00a8939123d3
+md"## Motivación"
+
+# ╔═╡ 66864f58-9d2c-43ac-b06e-c8163d1aaffe
+md"""
 ### Concentración de $CO_2$
 
 La concentración promedio anual (ppm) de $CO_2$ atmosférico en Mauna Loa ([Wikipedia](https://es.wikipedia.org/wiki/Mauna_Loa)), en partes por millón (ppm), $t$ años después de 1950 (año 0), está dada por la siguiente función:
 
-$$\text{CO}_{2}(t) = 0.0134594696825t^2 + 0.520632601929t + 310.423363171$$
-
-"""
-
-# ╔═╡ 5e166a34-54db-11ef-1063-dfd78fe4d528
-begin
-	function co2(t)
-		return 0.0134594696825*t^2 + 0.520632601929*t + 310.423363171
-	end
-end
-
-# ╔═╡ 0a955a82-4bfd-47b5-a52f-8cb6763c8920
-begin
-	t = 0:1:100
-	conc = co2.(t)
-	g1 = plot(t, conc, label = false, xlabel = "Tiempo (años)", 
-		ylabel = "Concentración de CO2 (ppm)")
-end
-
-# ╔═╡ 6136982e-b873-4504-949a-8455bb64165e
-md"""
+$\text{CO}_{2}(t) = 0.0134594696825t^2 + 0.520632601929t + 310.423363171$
 
 Para comprender cómo han cambiado y están cambiando los niveles de $CO_2$, se plantean dos preguntas. 
 
 + ¿qué tan rápido estaba aumentando el $CO_2$ desde 1950 (año 0) hasta 2017 (año 67)
 + ¿qué tan rápido están aumentando los niveles de $CO_2$ en 2017?
 
-Antes de contestar las interrogantes, vamos a plantear algunas definiciones.
 """
 
-# ╔═╡ abea80e5-7c37-4c8c-826e-1afbfe8f9b68
+# ╔═╡ 8ed85895-2c4f-4fff-a2ca-28bf9777166a
+begin
+	co2(t) = 0.0134594696825*t^2 + 0.520632601929*t + 310.423363171
+	t = 0:1:100
+	conc = co2.(t)
+	g1 = plot(t, conc, label = false, xlabel = "Tiempo (años)", 
+		ylabel = "Concentración de CO2 (ppm)", linewidth=2)
+end
+
+# ╔═╡ 59464160-6515-4a58-a358-0d0efe35e4f0
 md"""
++ De 1950 a 2017 transcurrieron 67 años, es decir, $\Delta t = 67$ años.
 
-## Pendiente de una línea secante
++ El cambio en los niveles de concentración en dicho periodo de tiempo es $\Delta CO_2 = 405.7253 \text{ppm}- 310.4233 \text{ppm} = 95.301 \text{ppm}$ 
 
-La pendiente de una línea secante desde $(a, f(a))$ hasta $(b, f(b))$ es
++ Por lo tanto, $\displaystyle{\frac{\Delta CO_2}{\Delta t} = \frac{95.301 \text{ppm}}{67 \text{año}} = 1.42 \text{ppm/año}}$
 
-$$\frac{f(b)-f(a)}{b-a}$$
-
-También es la razón de cambio promedio de una función desde $x=a$ hasta $x=b$.
+Para contestar la segunda pregunta, involucra calcular un **cambio instanténeo**.
 """
 
-# ╔═╡ d6609b30-a633-4ffd-8c8a-a64ba949c3ab
+# ╔═╡ 3abbc953-9eee-4ae6-a19b-1d6298e3a54e
+co2_f = co2(67)
+
+# ╔═╡ 44467edd-27df-44a6-a8e8-e6ae23314ba1
+co2_i = co2(0)
+
+# ╔═╡ 0a9221d1-9e91-4f5a-ac9c-b99b7a86c6d1
+co2_f - co2_i
+
+# ╔═╡ 49480d73-4f09-4003-bdf0-b39f2f49df8f
+(co2_f - co2_i)/67
+
+# ╔═╡ 0755e769-682b-4d94-a338-72cdf27892d3
+md"## Definición"
+
+# ╔═╡ 03aade0f-5f43-4fa5-927d-4690dc3d7ae8
 md"""
-Para ejemplo, $a=0$ y $b=67$
+Sea $f(x)$ una función, se define a su derivada $f'(x)$ como:
+
+$f'(x) = \lim_{\Delta x \to 0} \frac{f(x+\Delta x) - f(x)}{\Delta x}$
+
+Representaciones de la derivada: $f'(x), y', \frac{dy}{dx}, D_x y$
 """
 
-# ╔═╡ 97e36a90-70ad-4229-a942-b338f5869b5f
+# ╔═╡ 1d4d54dc-aec4-43b4-88df-385d62cf69f3
+md"## Interpretación geométrica"
+
+# ╔═╡ 435b552f-bd01-40fc-8628-1ffb486579c7
+md"""
+El valor de la derivada en cualquier punto de la curva es igual a la pendiente de la recta tangente en ese punto.
+
+Donde: 
+
+Incremento en x es $\Delta x$
+
+Incremento en y es $\Delta y$
+"""
+
+# ╔═╡ 139ee390-edf0-44a9-ba43-f8c058df5466
 begin
-	aa = 0
-	bb = 67
-	resultado = (co2(bb) - co2(aa))/(bb-aa)
+	x0 = @bind x0 Slider(0.0:0.01:5.0, 0.0, true)
+	md"Valor $x$ = $x0"
 end
 
-# ╔═╡ 756f770c-9281-4a8a-b2e5-d0efe5b5f854
+# ╔═╡ 2b15c89b-630e-407a-adfd-f1ca3ca634a1
+begin
+	Δ = @bind Δ Slider(0.001:0.001:5.0, 5.0, true)
+	md"Valor $\Delta x$ = $Δ"
+end
+
+# ╔═╡ 955842a9-a2b6-4a30-8ee2-578e292aa4e5
+begin
+	x1 = x0 + Δ
+	x = -1.0:0.01:(x1+3)
+	
+	f(x) = x^2 + 1
+
+	f0 = f(x0)
+	f1 = f(x1)
+
+	m = (f1-f0)/(x1-x0)
+	b = f1 - m*x1
+	y(x) = m*x + b 
+	
+	plot(x, f.(x), linewidth = 2, color =:blue, label = L"f(x)")
+	hline!([f0, f1], linestyle=:dash, color=:gray, label=false)
+	vline!([x0, x1], linestyle=:dash, color=:gray, label=false)
+	plot!(x, y.(x), color=:red, label = L"L")
+	#annotate!([0],[f1], text(L"f(x + \Delta x)", :red, 11))
+	#annotate!([0],[f0], text(L"f(x)", :red, 11))
+	#annotate!([x1], [0], text(L"x + \Delta x", :red, 11))
+	#annotate!([x0], [0],text(L"x", :red, 11))
+end
+
+# ╔═╡ f4407e15-f8d6-464c-9296-e349f477ef9d
+md"Aproximación de la derivada es $m"
+
+# ╔═╡ e868864c-6d30-48ff-aa70-6a613d624879
 md"""
-Poniendo el valor $resultado en contexto, podemos decir que los niveles promedio anuales de CO2 en el sitio de Mauna Loa aumentaron en promedio $resultado ppm por año desde 1950 hasta 2017.
+## Regla de los 4 pasos
 
-La segunda pregunta es más compleja ya que la pregunta aborda un cambio instantáneo.
+Sea una función $y=f(x)$, entonces:
 
-Podemos hacernos a la ídea de que hacemos un zoom a la gráfica anterior muy cerca del valor en x de 67, de modo que la línea secante y la gráfica sean indistinguibles.
+Paso 1:  $y + \Delta y = f(x + \Delta x)$
 
-Nos podemos acercar una pequeña cantidad $h$ tanto a la izquierda como a la derecha.
+Paso 2: $\Delta y = f(x + \Delta x) - f(x)$
 
+Paso 3: $\displaystyle{\frac{\Delta y}{\Delta x} = \frac{f(x+\Delta x) - f(x)}{\Delta x}}$ (razón de cambio)
 
-$$\frac{f(a+h)-f(a-h)}{a+h-(a-h)}$$
+Paso 4: $\displaystyle{\frac{dy}{dx} = \lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x}= \lim_{\Delta x \to 0} \frac{f(x+\Delta x) - f(x)}{\Delta x}}$ (derivada de la función)
+"""
+
+# ╔═╡ 0cf619c6-d4b6-4b55-b133-b13a9b145e5d
+md"""
+**Ejemplo**
+
+Encontrar la derivada de la función $f(x) = 5x -6$
+
+*Solución*
+
+Se aplica la regla de los cuatro pasos y se obtiene:
+
+Paso 1: $y + \Delta y = 5(x + \Delta x) -6$
+
+Paso 2: $\Delta y = 5(x + \Delta x) -6  - (5x-6) = 5x + 5\Delta x - 6 - 5x + 6 = 5\Delta x$
+
+Paso 3: $\displaystyle{\frac{\Delta y}{\Delta x} = \frac{5\Delta x}{\Delta x} = 5}$
+
+Paso 4: $\displaystyle{\frac{dy}{dx} = \lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x}=\lim_{\Delta x \to 0} 5 = 5}$
+
+Por lo tanto, $f'(x) = 5$.
+"""
+
+# ╔═╡ bd8c944d-d531-472f-a726-ff48a6139673
+md"""
+**Continuación del ejemplo introductorio**
+
+Reeplazando (por simplificidad) $y = CO_2(t)$ y $x=t$
+
+$y = 0.0134594696825x^2 + 0.520632601929x + 310.423363171$
+"""
+
+# ╔═╡ 56932a23-c208-4c91-9238-653a7c1c05c5
+md"""
+  **Paso 1:**  
+  Consideramos un incremento pequeño en $x$, lo que da lugar a un cambio en $y$:
+  
+  $y + \Delta y = f(x + \Delta x) = 0.0134594696825(x + \Delta x)^2 + 0.520632601929(x + \Delta x) + 310.423363171$
+
+**Paso 2:**  
+  
+Calculamos el cambio en $y$:
+  
+  $\Delta y = f(x + \Delta x) - f(x)$
+
+Sustituimos $f(x + \Delta x)$ y $f(x)$ en la ecuación:
+  
+  $\Delta y = \left( 0.0134594696825(x + \Delta x)^2 + 0.520632601929(x + \Delta x) + 310.423363171 \right) - \left( 0.0134594696825x^2 + 0.520632601929x + 310.423363171 \right)$
+
+**Paso 3:**  
+  
+La razón de cambio promedio se define como:
+  
+  $\frac{\Delta y}{\Delta x} = \frac{f(x+\Delta x) - f(x)}{\Delta x}$
+
+Simplificamos la expresión para obtener:
+  
+  $\frac{\Delta y}{\Delta x} = \frac{0.0134594696825\left[(x + \Delta x)^2 - x^2\right] + 0.520632601929\Delta x}{\Delta x}$
+
+**Paso 4:**  
+  
+Tomamos el límite cuando $\Delta x$ tiende a 0 para obtener la derivada:
+  
+  $\frac{dy}{dx} = \lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x} = \lim_{\Delta x \to 0} \frac{0.0134594696825\left[(x + \Delta x)^2 - x^2\right] + 0.520632601929\Delta x}{\Delta x}$
+
+Expandiendo $(x + \Delta x)^2$ y simplificando:
+  
+  $(x + \Delta x)^2 = x^2 + 2x\Delta x + (\Delta x)^2$
+
+Entonces:
+  
+  $\frac{\Delta y}{\Delta x} = 0.0134594696825\left(2x + \Delta x\right) + 0.520632601929$
+
+Finalmente, tomando el límite cuando $\Delta x \to 0$:
+  
+  $\frac{dy}{dx} = 0.0134594696825 \cdot 2x + 0.520632601929 = 0.026918939365x + 0.520632601929$
+
+Por lo tanto, la derivada de la función es:
+  
+  $\frac{dy}{dx} = 0.026918939365x + 0.520632601929$
+"""
+
+# ╔═╡ a0de13fe-da1a-4412-b223-7fd6f19469b8
+md"""
+Para evaluar la derivada en $x = 67$, simplemente sustituimos $x = 67$ en la expresión de la derivada que obtuvimos:
+
+$\frac{dy}{dx} = 0.026918939365 \cdot 67 + 0.520632601929 \approx 2.32$
 
 """
 
-# ╔═╡ 34dab6a6-c0af-4199-a6d2-2f359bf902f7
-begin
-	h = @bind h Slider(0.0001:0.0001:30, 30.0, true)
-	md"h: $(h)"
-end
-
-# ╔═╡ 28b08db4-7466-4177-97ff-fa38afaf1dd9
-begin
-	a = @bind a Slider(25.0:1.0:75.0, 67.0, true)
-	md"a: $(a)"
-end
-
-# ╔═╡ 2da62cc8-66c7-49e8-b203-7c0080cde5e7
-begin
-	function sec(a,h)
-		(co2(a+h) - co2(a-h))/(a+h-(a-h))
-	end
-end
-
-# ╔═╡ 14c45171-f8b4-4680-a699-c5c5d71687c9
-begin
-	cambio = sec(a, h)
-end
-
-# ╔═╡ 8680b657-be75-4b70-b1e2-52c68af38aaf
-begin
-	t_values = 0:0.01:100
-	co2_values = co2.(t_values)
-
-	plot(t_values, co2_values, label="", xlabel="t", ylabel="co2", legend=:topright)
-
-	y1 = co2.(a-h)
-	m = sec(a, h)
-	x1 =  a - h
-
-	# Generar la recta secante con la pendiente calculada
-	line_values = y1 .+ m * (t_values .- x1)
-
-	plot!(t_values, line_values, label="", linestyle=:dash, color=:red)
-	scatter!([a], [co2(a)], color=:red, label="", markersize=8)
-end
-
-# ╔═╡ 957f6dc6-4d1a-46a6-bd68-57776b9203f9
+# ╔═╡ fce05a06-44f3-4c2c-9f7c-ff9932c13133
 md"""
-¿Qué significa el valor de la secante = $m? 
+**Interpretación**
 
-Respuesta: En el año $a, los niveles anuales promedio de CO2 en el sitio de Mauna Loa aumentaron  a un ritmo estimado de $m ppm por año.
+Respuesta: En el año 67, los niveles anuales promedio de CO2 en el sitio de Mauna Loa aumentaron  a un ritmo estimado de 3.32 ppm por año.
+"""
+
+# ╔═╡ 9f483480-a73d-4bc5-856f-3862631e7a0f
+md"""
+# Reglas Básicas de Derivación
+
+1. **Derivada de una constante:**
+   
+   $\frac{d}{dx} [c] = 0$
+
+   Donde \(c\) es una constante.
+
+2. **Derivada de una variable:**
+   
+   $\frac{d}{dx} [x] = 1$
+
+3. **Derivada de una constante multiplicada por una función:**
+   
+   $\frac{d}{dx} [c \cdot f(x)] = c \cdot \frac{d}{dx} [f(x)]$
+
+4. **Derivada de una suma o resta de funciones:**
+   
+   $\frac{d}{dx} [f(x) \pm g(x)] = \frac{d}{dx} [f(x)] \pm \frac{d}{dx} [g(x)]$
+
+5. **Regla del producto:**
+   
+   $\frac{d}{dx} [f(x) \cdot g(x)] = f'(x) \cdot g(x) + f(x) \cdot g'(x)$
+
+6. **Regla del cociente:**
+   
+   $\frac{d}{dx} \left[\frac{f(x)}{g(x)}\right] = \frac{f'(x) \cdot g(x) - f(x) \cdot g'(x)}{[g(x)]^2}$
+
+7. **Regla de la cadena:**
+   
+   $\frac{d}{dx} [f(g(x))] = f'(g(x)) \cdot g'(x)$
+
+# Derivadas de Funciones Comunes
+
+1. **Derivada de una potencia:**
+   
+   $\frac{d}{dx} [x^n] = n \cdot x^{n-1}$
+
+   Donde $n$ es cualquier número real.
+
+2. **Derivada de la función exponencial:**
+   
+   $\frac{d}{dx} [e^x] = e^x$
+   
+   
+   $\frac{d}{dx} [a^x] = a^x \cdot \ln(a)$
+
+   Donde $a > 0$ y $a \neq 1$.
+
+3. **Derivada del logaritmo natural:**
+
+   $\frac{d}{dx} [\ln(x)] = \frac{1}{x}$
+
+4. **Derivada del logaritmo en base $a$:**
+   
+   $\frac{d}{dx} [\log_a(x)] = \frac{1}{x \cdot \ln(a)}$
+
+5. **Derivada de las funciones trigonométricas:**
+   
+   $\frac{d}{dx} [\sin(x)] = \cos(x)$
+
+   $\frac{d}{dx} [\cos(x)] = -\sin(x)$
+
+   $\frac{d}{dx} [\tan(x)] = \sec^2(x)$
+
+6. **Derivada de las funciones trigonométricas inversas:**
+   
+   $\frac{d}{dx} [\arcsin(x)] = \frac{1}{\sqrt{1-x^2}}$
+
+   $\frac{d}{dx} [\arccos(x)] = \frac{-1}{\sqrt{1-x^2}}$
+
+   $\frac{d}{dx} [\arctan(x)] = \frac{1}{1+x^2}$
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-Distributions = "~0.25.109"
+DataFrames = "~1.6.1"
 LaTeXStrings = "~1.3.1"
 Plots = "~1.40.5"
 PlutoUI = "~0.7.59"
@@ -177,19 +347,13 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "6386b081fd7b9836b546cc1e33acd2d3dcf2c47b"
+project_hash = "2f433b127e41d3480db37398e408859790917b1c"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
 git-tree-sha1 = "6e1d2a35f2f90a4bc7c2ed98079b2ba09c35b83a"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
 version = "1.3.2"
-
-[[deps.AliasTables]]
-deps = ["PtrArrays", "Random"]
-git-tree-sha1 = "9876e1e164b144ca45e9e3198d0b689cadfed9ff"
-uuid = "66dad0bd-aa9a-41b7-9441-69ab47430ed8"
-version = "1.1.3"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -218,12 +382,6 @@ git-tree-sha1 = "a2f1c8c668c8e3cb4cca4e57a8efdb09067bb3fd"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
 version = "1.18.0+2"
 
-[[deps.Calculus]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "f641eb0a4f00c343bbc32346e1217b86f3ce9dad"
-uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
-version = "0.5.1"
-
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
 git-tree-sha1 = "b8fe8546d52ca154ac556809e10c75e6e7430ac8"
@@ -247,10 +405,12 @@ deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "Requires", "Statist
 git-tree-sha1 = "a1f44953f2382ebb937d60dafbe2deea4bd23249"
 uuid = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 version = "0.10.0"
-weakdeps = ["SpecialFunctions"]
 
     [deps.ColorVectorSpace.extensions]
     SpecialFunctionsExt = "SpecialFunctions"
+
+    [deps.ColorVectorSpace.weakdeps]
+    SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
@@ -284,16 +444,32 @@ git-tree-sha1 = "439e35b0b36e2e5881738abc8857bd92ad6ff9a8"
 uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.6.3"
 
+[[deps.Crayons]]
+git-tree-sha1 = "249fe38abf76d48563e2f4556bebd215aa317e15"
+uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
+version = "4.1.1"
+
 [[deps.DataAPI]]
 git-tree-sha1 = "abe83f3a2f1b857aac70ef8b269080af17764bbe"
 uuid = "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
 version = "1.16.0"
+
+[[deps.DataFrames]]
+deps = ["Compat", "DataAPI", "DataStructures", "Future", "InlineStrings", "InvertedIndices", "IteratorInterfaceExtensions", "LinearAlgebra", "Markdown", "Missings", "PooledArrays", "PrecompileTools", "PrettyTables", "Printf", "REPL", "Random", "Reexport", "SentinelArrays", "SortingAlgorithms", "Statistics", "TableTraits", "Tables", "Unicode"]
+git-tree-sha1 = "04c738083f29f86e62c8afc341f0967d8717bdb8"
+uuid = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+version = "1.6.1"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
 git-tree-sha1 = "1d0a14036acb104d9e89698bd408f63ab58cdc82"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 version = "0.18.20"
+
+[[deps.DataValueInterfaces]]
+git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
+uuid = "e2d170a0-9d28-54be-80f0-106bbe20a464"
+version = "1.0.0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -311,22 +487,6 @@ git-tree-sha1 = "9e2f36d3c96a820c678f2f1f1782582fcf685bae"
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 version = "1.9.1"
 
-[[deps.Distributions]]
-deps = ["AliasTables", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns"]
-git-tree-sha1 = "9c405847cc7ecda2dc921ccf18b47ca150d7317e"
-uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.25.109"
-
-    [deps.Distributions.extensions]
-    DistributionsChainRulesCoreExt = "ChainRulesCore"
-    DistributionsDensityInterfaceExt = "DensityInterface"
-    DistributionsTestExt = "Test"
-
-    [deps.Distributions.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-    DensityInterface = "b429d917-457f-4dbc-8f4c-0cc954292b1d"
-    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
 [[deps.DocStringExtensions]]
 deps = ["LibGit2"]
 git-tree-sha1 = "2fb1e02f2b635d0845df5d7c167fec4dd739b00d"
@@ -337,12 +497,6 @@ version = "0.9.3"
 deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 version = "1.6.0"
-
-[[deps.DualNumbers]]
-deps = ["Calculus", "NaNMath", "SpecialFunctions"]
-git-tree-sha1 = "5837a837389fccf076445fce071c8ddaea35a566"
-uuid = "fa6b7ba4-c1ee-5f82-b5fc-ecf0adba8f74"
-version = "0.6.8"
 
 [[deps.EpollShim_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -377,18 +531,6 @@ version = "4.4.4+1"
 [[deps.FileWatching]]
 uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
-[[deps.FillArrays]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "0653c0a2396a6da5bc4766c43041ef5fd3efbe57"
-uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "1.11.0"
-weakdeps = ["PDMats", "SparseArrays", "Statistics"]
-
-    [deps.FillArrays.extensions]
-    FillArraysPDMatsExt = "PDMats"
-    FillArraysSparseArraysExt = "SparseArrays"
-    FillArraysStatisticsExt = "Statistics"
-
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
 git-tree-sha1 = "05882d6995ae5c12bb5f36dd2ed3f61c98cbb172"
@@ -417,6 +559,10 @@ deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "1ed150b39aebcc805c26b93a8d0122c940f64ce2"
 uuid = "559328eb-81f9-559d-9380-de523a88c83c"
 version = "1.0.14+0"
+
+[[deps.Future]]
+deps = ["Random"]
+uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GLFW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Xorg_libXcursor_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll", "libdecor_jll", "xkbcommon_jll"]
@@ -471,12 +617,6 @@ git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+1"
 
-[[deps.HypergeometricFunctions]]
-deps = ["DualNumbers", "LinearAlgebra", "OpenLibm_jll", "SpecialFunctions"]
-git-tree-sha1 = "f218fe3736ddf977e0e772bc9a586b2383da2685"
-uuid = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
-version = "0.3.23"
-
 [[deps.Hyperscript]]
 deps = ["Test"]
 git-tree-sha1 = "179267cfa5e712760cd43dcae385d7ea90cc25a4"
@@ -495,14 +635,37 @@ git-tree-sha1 = "b6d6bfdd7ce25b0f9b2f6b3dd56b2673a66c8770"
 uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
 version = "0.2.5"
 
+[[deps.InlineStrings]]
+git-tree-sha1 = "45521d31238e87ee9f9732561bfee12d4eebd52d"
+uuid = "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
+version = "1.4.2"
+
+    [deps.InlineStrings.extensions]
+    ArrowTypesExt = "ArrowTypes"
+    ParsersExt = "Parsers"
+
+    [deps.InlineStrings.weakdeps]
+    ArrowTypes = "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+    Parsers = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
+
 [[deps.InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+
+[[deps.InvertedIndices]]
+git-tree-sha1 = "0dc7b50b8d436461be01300fd8cd45aa0274b038"
+uuid = "41ab1584-1d38-5bbf-9106-f11c6c58b48f"
+version = "1.3.0"
 
 [[deps.IrrationalConstants]]
 git-tree-sha1 = "630b497eafcc20001bba38a4651b327dcfc491d2"
 uuid = "92d709cd-6900-40b7-9082-c6be49f344b6"
 version = "0.2.2"
+
+[[deps.IteratorInterfaceExtensions]]
+git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
+uuid = "82899510-4779-5014-852e-03e436cf321d"
+version = "1.0.0"
 
 [[deps.JLFzf]]
 deps = ["Pipe", "REPL", "Random", "fzf_jll"]
@@ -757,12 +920,6 @@ git-tree-sha1 = "a028ee3cb5641cccc4c24e90c36b0a4f7707bdf5"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
 version = "3.0.14+0"
 
-[[deps.OpenSpecFun_jll]]
-deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "13652491f6856acfd2db29360e1bbcd4565d04f1"
-uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
-version = "0.5.5+0"
-
 [[deps.Opus_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "51a08fb14ec28da2ec7a927c4337e4332c2a4720"
@@ -778,12 +935,6 @@ version = "1.6.3"
 deps = ["Artifacts", "Libdl"]
 uuid = "efcefdf7-47ab-520b-bdef-62a2eaa19f15"
 version = "10.42.0+1"
-
-[[deps.PDMats]]
-deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse"]
-git-tree-sha1 = "949347156c25054de2db3b166c52ac4728cbad65"
-uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
-version = "0.11.31"
 
 [[deps.Pango_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "FriBidi_jll", "Glib_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl"]
@@ -851,6 +1002,12 @@ git-tree-sha1 = "ab55ee1510ad2af0ff674dbcced5e94921f867a9"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 version = "0.7.59"
 
+[[deps.PooledArrays]]
+deps = ["DataAPI", "Future"]
+git-tree-sha1 = "36d8b4b899628fb92c2749eb488d884a926614d3"
+uuid = "2dfb63ee-cc39-5dd5-95bd-886bf059d720"
+version = "1.4.3"
+
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
 git-tree-sha1 = "5aa36f7049a63a1528fe8f7c3f2113413ffd4e1f"
@@ -863,14 +1020,15 @@ git-tree-sha1 = "9306f6085165d270f7e3db02af26a400d580f5c6"
 uuid = "21216c6a-2e73-6563-6e65-726566657250"
 version = "1.4.3"
 
+[[deps.PrettyTables]]
+deps = ["Crayons", "LaTeXStrings", "Markdown", "PrecompileTools", "Printf", "Reexport", "StringManipulation", "Tables"]
+git-tree-sha1 = "66b20dd35966a748321d3b2537c4584cf40387c7"
+uuid = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
+version = "2.3.2"
+
 [[deps.Printf]]
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-
-[[deps.PtrArrays]]
-git-tree-sha1 = "f011fbb92c4d401059b2212c05c0601b70f8b759"
-uuid = "43287f4e-b6f4-7ad1-bb20-aadabca52c3d"
-version = "1.2.0"
 
 [[deps.Qt6Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Vulkan_Loader_jll", "Xorg_libSM_jll", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_cursor_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "libinput_jll", "xkbcommon_jll"]
@@ -895,12 +1053,6 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Qt6Base_jll", "Qt6Declarative_jll"
 git-tree-sha1 = "729927532d48cf79f49070341e1d918a65aba6b0"
 uuid = "e99dba38-086e-5de3-a5b1-6e4c66e897c3"
 version = "6.7.1+1"
-
-[[deps.QuadGK]]
-deps = ["DataStructures", "LinearAlgebra"]
-git-tree-sha1 = "e237232771fdafbae3db5c31275303e056afaa9f"
-uuid = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
-version = "2.10.1"
 
 [[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
@@ -939,18 +1091,6 @@ git-tree-sha1 = "838a3a4188e2ded87a4f9f184b4b0d78a1e91cb7"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.3.0"
 
-[[deps.Rmath]]
-deps = ["Random", "Rmath_jll"]
-git-tree-sha1 = "f65dcb5fa46aee0cf9ed6274ccbd597adc49aa7b"
-uuid = "79098fc4-a85e-5d69-aa6a-4863f24498fa"
-version = "0.7.1"
-
-[[deps.Rmath_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "d483cd324ce5cf5d61b77930f0bbd6cb61927d21"
-uuid = "f50d1b31-88e8-58de-be2c-1cc44531875f"
-version = "0.4.2+0"
-
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 version = "0.7.0"
@@ -960,6 +1100,12 @@ deps = ["Dates"]
 git-tree-sha1 = "3bac05bc7e74a75fd9cba4295cde4045d9fe2386"
 uuid = "6c6a2e73-6563-6170-7368-637461726353"
 version = "1.2.1"
+
+[[deps.SentinelArrays]]
+deps = ["Dates", "Random"]
+git-tree-sha1 = "ff11acffdb082493657550959d4feb4b6149e73a"
+uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
+version = "1.4.5"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -989,18 +1135,6 @@ deps = ["Libdl", "LinearAlgebra", "Random", "Serialization", "SuiteSparse_jll"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 version = "1.10.0"
 
-[[deps.SpecialFunctions]]
-deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
-git-tree-sha1 = "2f5d4697f21388cbe1ff299430dd169ef97d7e14"
-uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "2.4.0"
-
-    [deps.SpecialFunctions.extensions]
-    SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
-
-    [deps.SpecialFunctions.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -1018,23 +1152,11 @@ git-tree-sha1 = "5cf7606d6cef84b543b483848d4ae08ad9832b21"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.34.3"
 
-[[deps.StatsFuns]]
-deps = ["HypergeometricFunctions", "IrrationalConstants", "LogExpFunctions", "Reexport", "Rmath", "SpecialFunctions"]
-git-tree-sha1 = "cef0472124fab0695b58ca35a77c6fb942fdab8a"
-uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
-version = "1.3.1"
-
-    [deps.StatsFuns.extensions]
-    StatsFunsChainRulesCoreExt = "ChainRulesCore"
-    StatsFunsInverseFunctionsExt = "InverseFunctions"
-
-    [deps.StatsFuns.weakdeps]
-    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
-
-[[deps.SuiteSparse]]
-deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
-uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
+[[deps.StringManipulation]]
+deps = ["PrecompileTools"]
+git-tree-sha1 = "a04cabe79c5f01f4d723cc6704070ada0b9d46d5"
+uuid = "892a3eda-7b42-436c-8928-eab12a02cf0e"
+version = "0.3.4"
 
 [[deps.SuiteSparse_jll]]
 deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
@@ -1045,6 +1167,18 @@ version = "7.2.1+1"
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 version = "1.0.3"
+
+[[deps.TableTraits]]
+deps = ["IteratorInterfaceExtensions"]
+git-tree-sha1 = "c06b2f539df1c6efa794486abfb6ed2022561a39"
+uuid = "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
+version = "1.0.1"
+
+[[deps.Tables]]
+deps = ["DataAPI", "DataValueInterfaces", "IteratorInterfaceExtensions", "OrderedCollections", "TableTraits"]
+git-tree-sha1 = "598cd7c1f68d1e205689b1c2fe65a9f85846f297"
+uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+version = "1.12.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
@@ -1416,21 +1550,31 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╟─4fd05188-b53d-4a51-9545-8ec012a91320
-# ╠═a49d7d88-eebf-4ba3-86d6-f0419fc1061c
-# ╠═d343d317-4704-4436-ac95-ce4a63cdb05a
-# ╠═5e166a34-54db-11ef-1063-dfd78fe4d528
-# ╠═0a955a82-4bfd-47b5-a52f-8cb6763c8920
-# ╠═6136982e-b873-4504-949a-8455bb64165e
-# ╟─abea80e5-7c37-4c8c-826e-1afbfe8f9b68
-# ╟─d6609b30-a633-4ffd-8c8a-a64ba949c3ab
-# ╠═97e36a90-70ad-4229-a942-b338f5869b5f
-# ╟─756f770c-9281-4a8a-b2e5-d0efe5b5f854
-# ╠═34dab6a6-c0af-4199-a6d2-2f359bf902f7
-# ╠═28b08db4-7466-4177-97ff-fa38afaf1dd9
-# ╟─2da62cc8-66c7-49e8-b203-7c0080cde5e7
-# ╟─14c45171-f8b4-4680-a699-c5c5d71687c9
-# ╟─8680b657-be75-4b70-b1e2-52c68af38aaf
-# ╠═957f6dc6-4d1a-46a6-bd68-57776b9203f9
+# ╠═7b4ea28d-d17c-428b-92ed-e1b4251997fd
+# ╟─66ab9d50-5b18-11ef-38e5-870a71594d22
+# ╠═4dbcd5bd-2101-4079-9302-ae73d0da2165
+# ╟─1a71be63-ec12-4349-9ac9-00a8939123d3
+# ╟─66864f58-9d2c-43ac-b06e-c8163d1aaffe
+# ╟─8ed85895-2c4f-4fff-a2ca-28bf9777166a
+# ╟─59464160-6515-4a58-a358-0d0efe35e4f0
+# ╠═3abbc953-9eee-4ae6-a19b-1d6298e3a54e
+# ╠═44467edd-27df-44a6-a8e8-e6ae23314ba1
+# ╠═0a9221d1-9e91-4f5a-ac9c-b99b7a86c6d1
+# ╠═49480d73-4f09-4003-bdf0-b39f2f49df8f
+# ╟─0755e769-682b-4d94-a338-72cdf27892d3
+# ╟─03aade0f-5f43-4fa5-927d-4690dc3d7ae8
+# ╟─1d4d54dc-aec4-43b4-88df-385d62cf69f3
+# ╟─435b552f-bd01-40fc-8628-1ffb486579c7
+# ╟─955842a9-a2b6-4a30-8ee2-578e292aa4e5
+# ╟─139ee390-edf0-44a9-ba43-f8c058df5466
+# ╟─2b15c89b-630e-407a-adfd-f1ca3ca634a1
+# ╟─f4407e15-f8d6-464c-9296-e349f477ef9d
+# ╟─e868864c-6d30-48ff-aa70-6a613d624879
+# ╟─0cf619c6-d4b6-4b55-b133-b13a9b145e5d
+# ╟─bd8c944d-d531-472f-a726-ff48a6139673
+# ╟─56932a23-c208-4c91-9238-653a7c1c05c5
+# ╟─a0de13fe-da1a-4412-b223-7fd6f19469b8
+# ╟─fce05a06-44f3-4c2c-9f7c-ff9932c13133
+# ╟─9f483480-a73d-4bc5-856f-3862631e7a0f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
