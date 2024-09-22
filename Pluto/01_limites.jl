@@ -187,7 +187,7 @@ Si $0 < |x-a| < \delta$, entomnces $|f(x) - L| < \epsilon$
 # ╔═╡ 012217b3-524f-4094-8e6d-099fa7443006
 begin
 	# Use the raw URL of the image
-	url1 = "https://raw.githubusercontent.com/bjesusvh/Calculus/main/Pluto/limite.png"
+	url1 = "https://raw.githubusercontent.com/bjesusvh/Calculus/main/Pluto/limite.jpeg"
 	nombre1 = download(url1, "limite.png")
 	limite = load(nombre1)
 end
@@ -359,7 +359,7 @@ SymPy = "~2.2.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.4"
+julia_version = "1.10.5"
 manifest_format = "2.0"
 project_hash = "daf0317658a88f68237ba7d3b4e569325c728db5"
 
@@ -1756,7 +1756,7 @@ version = "0.15.1+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+1"
+version = "5.11.0+0"
 
 [[deps.libdecor_jll]]
 deps = ["Artifacts", "Dbus_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "Pango_jll", "Wayland_jll", "xkbcommon_jll"]
@@ -1847,7 +1847,7 @@ version = "1.4.1+1"
 # ╟─28e63445-645c-41c9-ba07-b8a7a106d2a4
 # ╟─26ce57b7-345e-4dea-8a28-2efc184a0567
 # ╟─1b82cb2c-644d-4e54-9119-4a8d8c57a379
-# ╠═1c03dd2a-aea2-495c-bdbb-c3773f0e7360
+# ╟─1c03dd2a-aea2-495c-bdbb-c3773f0e7360
 # ╟─e96d77d2-9368-45f8-bcc3-f76ab2a1c749
 # ╟─63c19177-168a-49aa-9241-4613a40df28e
 # ╟─971f2a8a-3086-4c30-b2c9-9dba8005b82f
@@ -1856,7 +1856,7 @@ version = "1.4.1+1"
 # ╟─3b0d6219-d61f-4509-8904-eca30528516e
 # ╟─70c8cf37-bd3e-4376-92a7-e9b5ad8c82db
 # ╟─d28fa0a0-63b0-4a92-abf4-46cb8800bf41
-# ╟─012217b3-524f-4094-8e6d-099fa7443006
+# ╠═012217b3-524f-4094-8e6d-099fa7443006
 # ╟─85a11e5c-237f-47fc-8297-7e70ed5f99be
 # ╟─a8ce19e5-3fbd-4148-93e9-e3e19aedb564
 # ╟─c11f3fd7-1477-4bad-af50-2e3e24f57303
