@@ -187,10 +187,13 @@ Si $0 < |x-a| < \delta$, entomnces $|f(x) - L| < \epsilon$
 # ╔═╡ 012217b3-524f-4094-8e6d-099fa7443006
 begin
 	# Use the raw URL of the image
-	url1 = "https://github.com/bjesusvh/Calculus/blob/main/Pluto/limite.jpeg"
+	url1 = "https://github.com/bjesusvh/Calculus/blob/main/Pluto/limite.png"
 	nombre1 = download(url1, "limite.png")
 	limite = load(nombre1)
 end
+
+# ╔═╡ ea7b2459-07d7-4505-97f5-68ff548a0627
+
 
 # ╔═╡ 85a11e5c-237f-47fc-8297-7e70ed5f99be
 md"""
@@ -1857,6 +1860,7 @@ version = "1.4.1+1"
 # ╟─70c8cf37-bd3e-4376-92a7-e9b5ad8c82db
 # ╟─d28fa0a0-63b0-4a92-abf4-46cb8800bf41
 # ╠═012217b3-524f-4094-8e6d-099fa7443006
+# ╠═ea7b2459-07d7-4505-97f5-68ff548a0627
 # ╟─85a11e5c-237f-47fc-8297-7e70ed5f99be
 # ╟─a8ce19e5-3fbd-4148-93e9-e3e19aedb564
 # ╟─c11f3fd7-1477-4bad-af50-2e3e24f57303
